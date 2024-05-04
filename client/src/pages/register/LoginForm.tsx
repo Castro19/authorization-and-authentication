@@ -7,7 +7,7 @@ import { Navigate, Link } from "react-router-dom";
 // Importing component
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
-import { ErrorMessage } from "../homepage/ErrorMessage";
+import { ErrorMessage } from "../../components/register/ErrorMessage";
 
 // Importing Contexts
 import { useAuth } from "@/contexts/authContext";

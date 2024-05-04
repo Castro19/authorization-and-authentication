@@ -7,10 +7,15 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from "@/contexts/authContext";
 
-import HomePage from "./pages/homepage/HomePage.tsx";
-import { SignupFormDemo } from "./pages/signup/SignUpForm.tsx";
-import { LoginFormDemo } from "./pages/login/LoginForm.tsx";
-import Home from "./pages/homepage/Home.tsx";
+import HomePage from "./pages/register/HomePage.tsx";
+import { SignupFormDemo } from "./pages/register/SignUpForm.tsx";
+import { LoginFormDemo } from "./pages/register/LoginForm.tsx";
+import Home from "./pages/home/Home.tsx";
+import SecretsPage from "./pages/home/secrets/SecretsPage.tsx";
+
+// Loaders:
+import fetchSecrets from "./components/secrets/ReadSecret/readSecret.ts";
+
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -23,7 +28,17 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginFormDemo /> },
     ],
   },
-  { path: "/home", element: <Home /> },
+  {
+    path: "/home",
+    element: <Home />,
+    children: [
+      {
+        path: "/home/secrets/:userId",
+        element: <SecretsPage />,
+        loader: fetchSecrets,
+      },
+    ],
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

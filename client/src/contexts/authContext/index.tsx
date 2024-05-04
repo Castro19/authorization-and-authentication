@@ -29,6 +29,8 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [userId, setUserId] = useState<string | null>(null); // State to store the user ID
+
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [isEmailUser, setIsEmailUser] = useState(false);
   const [isGoogleUser, setIsGoogleUser] = useState(false);
@@ -38,6 +40,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user);
+        setUserId(user.uid); // Set user ID from the user object
         const isEmail = user.providerData.some(
           (provider) => provider.providerId === "password"
         );
@@ -45,6 +48,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUserLoggedIn(true);
       } else {
         setCurrentUser(null);
+        setUserId(null); // Clear user ID when no user is logged in
         setUserLoggedIn(false);
       }
       setLoading(false);
@@ -56,6 +60,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     userLoggedIn,
     isEmailUser,
     isGoogleUser,
+    userId, // Include the userId in the context value
     currentUser,
     setCurrentUser,
   };

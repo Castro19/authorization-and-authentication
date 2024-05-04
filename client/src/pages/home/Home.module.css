@@ -1,0 +1,28 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-items: center;
+  align-items: center;
+}
+/* @media (max-width: 600px) {
+  .container {
+    grid-template-rows: 1fr 1f 8fr;
+  }
+} */
+
+.cardContainer {
+  grid-column: span 3;
+}
+.homeTitle {
+  grid-column: span 3;
+  font-size: 30px;
+}
+.buttonFlexContainer {
+  grid-column: span 3;
+  display: flex;
+  margin-top: 30px;
+  margin-bottom: 30px;
+
+  gap: 10px;
+  justify-content: center;
+}

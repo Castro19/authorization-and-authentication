@@ -1,9 +1,8 @@
 // TitleCard.tsx
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const TitleCard = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <div className="w-1/2 p-8 flex flex-col justify-center items-start bg-gradient-to-b from-indigo-500 to-indigo-700 text-white">

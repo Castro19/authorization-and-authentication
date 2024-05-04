@@ -10,13 +10,23 @@ import {
   ActionCodeSettings,
 } from "firebase/auth";
 import { auth } from "./firebase";
-// Assuming 'auth' is properly typed in its definition module
+// import sendUserToDB from "./sendUser";
 
 export const doCreateUserWithEmailAndPassword = async (
   email: string,
-  password: string
+  password: string,
+  firstName: string,
+  lastName: string
 ): Promise<UserCredential> => {
-  return createUserWithEmailAndPassword(auth, email, password);
+  console.log("SignUP: ", firstName, lastName);
+  const userCredential: UserCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  // const firebaseUserId = userCredential.user.uid; // Get the Firebase user ID
+  // await sendUserToDB(firebaseUserId, firstName, lastName);
+  return userCredential;
 };
 
 export const doSignInWithEmailAndPassword = async (

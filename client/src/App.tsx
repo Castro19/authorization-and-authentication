@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { Button } from "./components/ui/button";
-import { SignupFormDemo } from "./pages/signup/SignUpForm";
+import { SignupFormDemo } from "./pages/register/SignUpForm";
 
 import "./App.css";
 

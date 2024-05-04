@@ -1,7 +1,5 @@
-// HomePage.tsx
-import React from "react";
 import { Outlet } from "react-router-dom";
-import TitleCard from "./TitleCard"; // Make sure the import path is correct
+import TitleCard from "@/components/register/TitleCard";
 
 const HomePage = () => {
   return (

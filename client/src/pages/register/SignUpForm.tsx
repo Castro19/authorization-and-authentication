@@ -1,9 +1,8 @@
-"use client";
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
-import { ErrorMessage } from "../homepage/ErrorMessage";
+import { ErrorMessage } from "../../components/register/ErrorMessage";
 import { cn } from "@/lib/utils";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import {
@@ -11,7 +10,8 @@ import {
   doSignInWithGoogle,
 } from "@/firebase/auth";
 import { useAuth } from "@/contexts/authContext";
-import { Navigate, Link, useNavigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
+import sendUserToDB from "@/firebase/sendUser";
 
 export function SignupFormDemo() {
   const { userLoggedIn } = useAuth();
@@ -60,12 +60,21 @@ export function SignupFormDemo() {
       return;
     }
 
-    try {
-    } catch (error) {}
     if (!isRegistering) {
       try {
         setIsRegistering(true);
-        await doCreateUserWithEmailAndPassword(email, password);
+        const userCredential = await doCreateUserWithEmailAndPassword(
+          email,
+          password,
+          firstName,
+          lastName
+        );
+        try {
+          await sendUserToDB(userCredential.user.uid, firstName, lastName);
+        } catch (error) {
+          console.log("Error sending user to DB: ", error);
+        }
+
         setSignupError(""); // Clear error on successful registration
         // Optionally navigate to a different page on successful registration
       } catch (error) {
