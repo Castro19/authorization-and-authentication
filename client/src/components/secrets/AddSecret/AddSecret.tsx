@@ -4,25 +4,57 @@ import { Button } from "../../ui/button";
 import postSecret from "./postSecret";
 import { useAuth } from "@/contexts/authContext";
 import { SecretsType } from "@/types";
+import updateSecret from "../EditSecret/putSecret";
 
-type AddSecretProps = {
+type AddEditSecretProps = {
   trigger: boolean;
   setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
   setSecrets: React.Dispatch<React.SetStateAction<SecretsType[]>>;
+  editSecret?: SecretsType; // Optional prop for editing
 };
-
-const AddSecret = ({ trigger, setTrigger, setSecrets }: AddSecretProps) => {
+const AddEditSecret = ({
+  trigger,
+  setTrigger,
+  setSecrets,
+  editSecret,
+}: AddEditSecretProps) => {
   const popupInnerRef = useRef(null);
   const [secretTitle, setSecretTitle] = useState("");
   const [secretDesc, setSecretDesc] = useState("");
   const { userId } = useAuth();
 
+  useEffect(() => {
+    // When editSecret changes, update form fields
+    if (editSecret) {
+      setSecretTitle(editSecret.title);
+      setSecretDesc(editSecret.description);
+    } else {
+      setSecretTitle("");
+      setSecretDesc("");
+    }
+  }, [editSecret]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Title: ", secretTitle);
-    console.log("Description: ", secretDesc);
 
-    if (userId) {
+    if (!userId) return;
+
+    if (editSecret) {
+      // Update existing secret
+      const updatedSecret = {
+        ...editSecret,
+        title: secretTitle,
+        description: secretDesc,
+      };
+      // Call an API function to update the secret
+      await updateSecret(updatedSecret);
+      setSecrets((prev) =>
+        prev.map((s) =>
+          s.secretId === editSecret.secretId ? updatedSecret : s
+        )
+      );
+    } else {
+      // Add new secret
       const secretId = await postSecret(userId, secretTitle, secretDesc);
       const newSecret = {
         userId,
@@ -30,7 +62,6 @@ const AddSecret = ({ trigger, setTrigger, setSecrets }: AddSecretProps) => {
         title: secretTitle,
         description: secretDesc,
       };
-      console.log("NEW SECRET: ", newSecret);
       setSecrets((prev) => [...prev, newSecret]);
     }
 
@@ -43,16 +74,16 @@ const AddSecret = ({ trigger, setTrigger, setSecrets }: AddSecretProps) => {
     setTrigger(false);
   };
 
-  const handleClickOutside = (event) => {
-    if (
-      popupInnerRef.current &&
-      !popupInnerRef.current.contains(event.target)
-    ) {
-      setTrigger(false);
-    }
-  };
-
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        popupInnerRef.current &&
+        !popupInnerRef.current.contains(event.target)
+      ) {
+        setTrigger(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -95,14 +126,12 @@ const AddSecret = ({ trigger, setTrigger, setSecrets }: AddSecretProps) => {
             className={styles.textArea}
           />
           <Button type="submit" className={styles.button}>
-            Add a new Secret
+            {editSecret ? "Update Secret" : "Add a new Secret"}
           </Button>
         </form>
       </div>
     </div>
-  ) : (
-    ""
-  );
+  ) : null;
 };
 
-export default AddSecret;
+export default AddEditSecret;
