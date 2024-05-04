@@ -3,7 +3,6 @@ import styles from "./AddSecret.module.css";
 import { Button } from "../../ui/button";
 import postSecret from "./postSecret";
 import { useAuth } from "@/contexts/authContext";
-import fetchSecrets from "../ReadSecret/readSecret";
 import { SecretsType } from "@/types";
 
 type AddSecretProps = {
@@ -24,12 +23,14 @@ const AddSecret = ({ trigger, setTrigger, setSecrets }: AddSecretProps) => {
     console.log("Description: ", secretDesc);
 
     if (userId) {
-      await postSecret(userId, secretTitle, secretDesc);
+      const secretId = await postSecret(userId, secretTitle, secretDesc);
       const newSecret = {
+        userId,
+        secretId,
         title: secretTitle,
         description: secretDesc,
-        userId: userId,
       };
+      console.log("NEW SECRET: ", newSecret);
       setSecrets((prev) => [...prev, newSecret]);
     }
 

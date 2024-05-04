@@ -25,6 +25,7 @@ export default async function postSecret(
     }
     const responseData = await response.json();
     console.log("Uploading Secrets worked!: ", responseData);
+    return responseData["secretId"];
   } catch (error) {
     console.log("Error posting the secret to the DB");
   }
