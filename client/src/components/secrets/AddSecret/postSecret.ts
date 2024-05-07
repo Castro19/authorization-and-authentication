@@ -1,5 +1,6 @@
 export default async function postSecret(
   userId: string,
+  userName: string,
   title: string,
   description: string
 ) {
@@ -10,6 +11,7 @@ export default async function postSecret(
     },
     body: JSON.stringify({
       userId,
+      userName,
       title,
       description,
     }),

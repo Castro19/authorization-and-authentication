@@ -13,6 +13,8 @@ import { LoginFormDemo } from "./pages/register/LoginForm.tsx";
 import Home from "./pages/home/Home.tsx";
 import SecretsPage from "./pages/home/secrets/SecretsPage.tsx";
 
+// Security
+import ProtectedRoute from "./security/ProtectedRoutes.tsx";
 // Loaders:
 import fetchSecrets from "./components/secrets/ReadSecret/readSecret.ts";
 
@@ -29,12 +31,20 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/home",
-    element: <Home />,
+    path: "/:userName",
+    element: (
+      <ProtectedRoute>
+        <Home />
+      </ProtectedRoute>
+    ),
     children: [
       {
-        path: "/home/secrets/:userId",
-        element: <SecretsPage />,
+        path: "/:userName/secrets",
+        element: (
+          <ProtectedRoute>
+            <SecretsPage />
+          </ProtectedRoute>
+        ),
         loader: fetchSecrets,
       },
     ],

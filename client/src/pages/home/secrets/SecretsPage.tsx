@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Secret from "@/components/secrets/Secret/Secret";
 import AddEditSecret from "@/components/secrets/AddSecret/AddSecret";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ const SecretsPage = () => {
     setEditSecret(secret);
     setTrigger(true);
   };
-
+  console.log("Secretsss:", secrets);
   return (
     <div className={styles.container}>
       {secrets.map((secret) => (

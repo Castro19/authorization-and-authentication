@@ -9,6 +9,8 @@ interface AuthContextType {
   isGoogleUser: boolean;
   currentUser: User | null;
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
+  userName: string | null;
+  setUserName: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 // Create a context with default values
@@ -30,6 +32,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userId, setUserId] = useState<string | null>(null); // State to store the user ID
+  const [userName, setUserName] = useState<string | null>(null);
 
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [isEmailUser, setIsEmailUser] = useState(false);
@@ -40,6 +43,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user);
+
         setUserId(user.uid); // Set user ID from the user object
         const isEmail = user.providerData.some(
           (provider) => provider.providerId === "password"
@@ -48,6 +52,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUserLoggedIn(true);
       } else {
         setCurrentUser(null);
+        setUserName(null); // Clear userName when no user is logged in
+
         setUserId(null); // Clear user ID when no user is logged in
         setUserLoggedIn(false);
       }
@@ -63,6 +69,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     userId, // Include the userId in the context value
     currentUser,
     setCurrentUser,
+    userName,
+    setUserName,
   };
 
   return (

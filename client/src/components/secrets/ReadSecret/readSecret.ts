@@ -1,7 +1,7 @@
 export default async function fetchSecrets({ params }) {
-  const userId = params.userId;
+  const userName = params.userName;
   try {
-    const response = await fetch(`http://localhost:4000/secrets/${userId}`);
+    const response = await fetch(`http://localhost:4000/secrets/${userName}`);
     if (!response.ok) {
       const errorData = await response.json();
       console.error("Backend Uploading secret", errorData);

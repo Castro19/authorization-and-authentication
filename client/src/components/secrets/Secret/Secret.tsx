@@ -33,6 +33,7 @@ const Secret = ({ setSecrets, secret, triggerEdit }: SecretsProps) => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>{secret.title}</h2>
+      <h4>By:{secret.userName}</h4>
       <p className={styles.text}>{secret.description}</p>
       <div className={styles.iconContainer}>
         <div className={styles.deleteSecretIcon}>

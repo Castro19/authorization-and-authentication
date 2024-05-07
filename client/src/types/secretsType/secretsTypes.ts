@@ -1,6 +1,7 @@
 export type SecretsType = {
   userId: number;
   secretId: number;
+  userName: string;
   title: string;
   description: string;
 };

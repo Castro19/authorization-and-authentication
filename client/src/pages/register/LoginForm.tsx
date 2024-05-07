@@ -17,9 +17,12 @@ import {
   doSignInWithEmailAndPassword,
   doSignInWithGoogle,
 } from "@/firebase/auth";
+import getUserInfo from "./fetchUserInfo";
 
 export function LoginFormDemo() {
-  const { userLoggedIn } = useAuth();
+  const auth = useAuth();
+  const [userNameReady, setUserNameReady] = useState(false);
+
   const [isSigningIn, setIsSigningIn] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -44,9 +47,20 @@ export function LoginFormDemo() {
     if (!isSigningIn) {
       try {
         setIsSigningIn(true);
-        await doSignInWithEmailAndPassword(email, password);
-        setSignInError(""); // Clear error on successful sign in
-        // Redirect to dashboard or home page after successful login if necessary
+        const userCredentials = await doSignInWithEmailAndPassword(
+          email,
+          password
+        );
+        try {
+          const userId = userCredentials.user.uid;
+          const userDetails = await getUserInfo(userId, "userId"); // Make sure to specify 'userId' as the type
+          const userName = userDetails.userName;
+          auth.setUserName(userName);
+          setUserNameReady(true); // Set the flag true here
+          setSignInError(""); // Clear error on successful sign in
+        } catch (error) {
+          console.log("Could not find userName:", error);
+        }
       } catch (error) {
         console.error(error);
         setIsSigningIn(false); // Update signing in state upon error
@@ -77,7 +91,9 @@ export function LoginFormDemo() {
 
   return (
     <div>
-      {userLoggedIn && <Navigate to={"/home"} replace={true} />}
+      {auth.userLoggedIn && userNameReady && auth.userName && (
+        <Navigate to={`/${auth.userName}`} replace={true} />
+      )}
       <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
           Welcome Back!

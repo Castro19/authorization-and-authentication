@@ -1,16 +1,8 @@
 export default async function sendUserToDB(
   firebaseUserId: string,
-  firstName: string,
-  lastName: string
+  userName: string
 ): Promise<void> {
   // Now, send a request to your backend to store additional user information
-  console.log(
-    JSON.stringify({
-      firebaseUserId,
-      firstName,
-      lastName,
-    })
-  );
   try {
     const options = {
       method: "POST",
@@ -19,8 +11,7 @@ export default async function sendUserToDB(
       },
       body: JSON.stringify({
         firebaseUserId,
-        firstName,
-        lastName,
+        userName,
       }),
     };
     console.log("Body Object: ", options);

@@ -14,10 +14,9 @@ import { Navigate, Link } from "react-router-dom";
 import sendUserToDB from "@/firebase/sendUser";
 
 export function SignupFormDemo() {
-  const { userLoggedIn } = useAuth();
+  const auth = useAuth();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
@@ -37,7 +36,7 @@ export function SignupFormDemo() {
 
     // Handling Errors:
     // Validate input fields are not empty
-    if (!firstName || !lastName || !email || !password || !confirmedPassword) {
+    if (!userName || !email || !password || !confirmedPassword) {
       setSignupError("Please fill in all fields.");
       return;
     }
@@ -65,12 +64,11 @@ export function SignupFormDemo() {
         setIsRegistering(true);
         const userCredential = await doCreateUserWithEmailAndPassword(
           email,
-          password,
-          firstName,
-          lastName
+          password
         );
         try {
-          await sendUserToDB(userCredential.user.uid, firstName, lastName);
+          await sendUserToDB(userCredential.user.uid, userName);
+          auth.setUserName(userName);
         } catch (error) {
           console.log("Error sending user to DB: ", error);
         }
@@ -118,7 +116,7 @@ export function SignupFormDemo() {
 
   return (
     <>
-      {userLoggedIn && <Navigate to={"/home"} replace={true} />}
+      {auth.userLoggedIn && <Navigate to={`/${userName}`} replace={true} />}
       <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
           Welcome
@@ -130,23 +128,13 @@ export function SignupFormDemo() {
         <form className="my-8" onSubmit={handleSubmit}>
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
-              <Label htmlFor="firstname">First name</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
-                id="firstname"
-                placeholder="First"
+                id="username"
+                placeholder="User"
                 type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-            </LabelInputContainer>
-            <LabelInputContainer>
-              <Label htmlFor="lastname">Last name</Label>
-              <Input
-                id="lastname"
-                placeholder="Last"
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
               />
             </LabelInputContainer>
           </div>

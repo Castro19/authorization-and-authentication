@@ -21,7 +21,7 @@ const AddEditSecret = ({
   const popupInnerRef = useRef(null);
   const [secretTitle, setSecretTitle] = useState("");
   const [secretDesc, setSecretDesc] = useState("");
-  const { userId } = useAuth();
+  const { userId, userName } = useAuth();
 
   useEffect(() => {
     // When editSecret changes, update form fields
@@ -55,10 +55,16 @@ const AddEditSecret = ({
       );
     } else {
       // Add new secret
-      const secretId = await postSecret(userId, secretTitle, secretDesc);
+      const secretId = await postSecret(
+        userId,
+        userName,
+        secretTitle,
+        secretDesc
+      );
       const newSecret = {
         userId,
         secretId,
+        userName,
         title: secretTitle,
         description: secretDesc,
       };
