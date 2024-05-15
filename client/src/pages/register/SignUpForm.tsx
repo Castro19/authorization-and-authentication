@@ -6,18 +6,16 @@ import { ErrorMessage } from "../../components/register/ErrorMessage";
 import { cn } from "@/lib/utils";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import {
-  doCreateUserWithEmailAndPassword,
+  // doCreateUserWithEmailAndPassword,
   doSignInWithGoogle,
 } from "@/firebase/auth";
 import { useAuth } from "@/contexts/authContext";
 import { Navigate, Link } from "react-router-dom";
-import sendUserToDB from "@/firebase/sendUser";
 
 export function SignupFormDemo() {
   const auth = useAuth();
 
   const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
   const [signUpError, setSignupError] = useState("");
@@ -36,14 +34,8 @@ export function SignupFormDemo() {
 
     // Handling Errors:
     // Validate input fields are not empty
-    if (!userName || !email || !password || !confirmedPassword) {
+    if (!userName || !password || !confirmedPassword) {
       setSignupError("Please fill in all fields.");
-      return;
-    }
-
-    // Validate email format
-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
-      setSignupError("Invalid email format.");
       return;
     }
 
@@ -62,35 +54,21 @@ export function SignupFormDemo() {
     if (!isRegistering) {
       try {
         setIsRegistering(true);
-        const userCredential = await doCreateUserWithEmailAndPassword(
-          email,
-          password
-        );
-        try {
-          await sendUserToDB(userCredential.user.uid, userName);
-          auth.setUserName(userName);
-        } catch (error) {
-          console.log("Error sending user to DB: ", error);
-        }
-
+        await auth.signup(userName, password);
         setSignupError(""); // Clear error on successful registration
         // Optionally navigate to a different page on successful registration
       } catch (error) {
         console.error(error);
+        console.log("Error sending user to DB: ", error);
+
         setIsRegistering(false); // Update registering state upon error
 
         // Firebase specific error handling
         switch (error.code) {
-          case "auth/email-already-in-use":
+          case "auth/username-already-in-use":
             setSignupError(
-              "The email address is already in use by another account."
+              "The username is already in use by another account."
             );
-            break;
-          case "auth/invalid-email":
-            setSignupError("The email address is not valid.");
-            break;
-          case "auth/operation-not-allowed":
-            setSignupError("Operation not allowed. Please contact support.");
             break;
           case "auth/weak-password":
             setSignupError(
@@ -116,7 +94,9 @@ export function SignupFormDemo() {
 
   return (
     <>
-      {auth.userLoggedIn && <Navigate to={`/${userName}`} replace={true} />}
+      {auth.userLoggedIn && auth.currentUser?.userName && (
+        <Navigate to={`/${auth.currentUser?.userName}`} replace={true} />
+      )}
       <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
           Welcome
@@ -138,16 +118,6 @@ export function SignupFormDemo() {
               />
             </LabelInputContainer>
           </div>
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="email">Email Address</Label>
-            <Input
-              id="email"
-              placeholder="example@gmail.com"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </LabelInputContainer>
           <LabelInputContainer className="mb-4">
             <Label htmlFor="password">Password</Label>
             <Input

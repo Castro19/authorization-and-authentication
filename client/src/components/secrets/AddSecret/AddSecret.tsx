@@ -18,10 +18,10 @@ const AddEditSecret = ({
   setSecrets,
   editSecret,
 }: AddEditSecretProps) => {
-  const popupInnerRef = useRef(null);
+  const popupInnerRef = useRef<HTMLDivElement>(null);
   const [secretTitle, setSecretTitle] = useState("");
   const [secretDesc, setSecretDesc] = useState("");
-  const { userId, userName } = useAuth();
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     // When editSecret changes, update form fields
@@ -37,7 +37,7 @@ const AddEditSecret = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!userId) return;
+    if (!currentUser?.userId) return;
 
     if (editSecret) {
       // Update existing secret
@@ -55,20 +55,29 @@ const AddEditSecret = ({
       );
     } else {
       // Add new secret
-      const secretId = await postSecret(
-        userId,
-        userName,
-        secretTitle,
+      if (
+        currentUser?.userName &&
+        currentUser?.userId &&
+        secretTitle &&
         secretDesc
-      );
-      const newSecret = {
-        userId,
-        secretId,
-        userName,
-        title: secretTitle,
-        description: secretDesc,
-      };
-      setSecrets((prev) => [...prev, newSecret]);
+      ) {
+        const secretId = await postSecret(
+          currentUser?.userId,
+          currentUser?.userName,
+          secretTitle,
+          secretDesc
+        );
+        const newSecret = {
+          userId: currentUser?.userId,
+          secretId,
+          userName: currentUser?.userName,
+          title: secretTitle,
+          description: secretDesc,
+        };
+        setSecrets((prev) => [...prev, newSecret]);
+      } else {
+        console.log("Cannot add secret if null");
+      }
     }
 
     setSecretTitle("");
@@ -81,10 +90,10 @@ const AddEditSecret = ({
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         popupInnerRef.current &&
-        !popupInnerRef.current.contains(event.target)
+        !popupInnerRef.current.contains(event.target as Node)
       ) {
         setTrigger(false);
       }

@@ -1,8 +1,6 @@
-import { error } from "console";
-
 type updateSecretType = {
-  userId: number;
-  secretId: number;
+  userId: string;
+  secretId: string;
   title: string;
   description: string;
 };

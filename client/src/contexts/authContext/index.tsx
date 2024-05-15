@@ -1,16 +1,31 @@
 import React, { useContext, useState, useEffect, ReactNode } from "react";
-import { auth } from "../../firebase/firebase";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { jwtDecode } from "jwt-decode";
+import {
+  handleSignup,
+  handleLogin,
+} from "@/components/register/helpers/handleUser";
+import { User } from "@/types";
+
+interface CustomToken {
+  userName: string;
+  userId: string;
+}
 
 // Define types for the context
+type loginReturnType = {
+  userId?: string;
+  userName?: string;
+  code?: string;
+  message?: string;
+};
+
 interface AuthContextType {
   userLoggedIn: boolean;
-  isEmailUser: boolean;
-  isGoogleUser: boolean;
   currentUser: User | null;
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
-  userName: string | null;
-  setUserName: React.Dispatch<React.SetStateAction<string | null>>;
+  login: (userName: string, password: string) => Promise<loginReturnType>;
+  signup: (userName: string, password: string) => Promise<void>;
+  logout: () => void;
 }
 
 // Create a context with default values
@@ -31,46 +46,84 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [userId, setUserId] = useState<string | null>(null); // State to store the user ID
-  const [userName, setUserName] = useState<string | null>(null);
-
   const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [isEmailUser, setIsEmailUser] = useState(false);
-  const [isGoogleUser, setIsGoogleUser] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user);
+    const checkAuthState = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        // Optionally verify the token with the backend here
+        try {
+          const response = await fetch(
+            "http://localhost:4000/registers/verifyToken",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (response.ok) {
+            // Decode token to get user data
+            const decoded = jwtDecode<CustomToken>(token);
 
-        setUserId(user.uid); // Set user ID from the user object
-        const isEmail = user.providerData.some(
-          (provider) => provider.providerId === "password"
-        );
-        setIsEmailUser(isEmail);
-        setUserLoggedIn(true);
-      } else {
-        setCurrentUser(null);
-        setUserName(null); // Clear userName when no user is logged in
-
-        setUserId(null); // Clear user ID when no user is logged in
-        setUserLoggedIn(false);
+            setCurrentUser({
+              userName: decoded.userName,
+              userId: decoded.userId,
+            });
+            setUserLoggedIn(true);
+          } else {
+            localStorage.removeItem("token");
+            setUserLoggedIn(false);
+          }
+        } catch (error) {
+          console.error("Failed to verify token:", error);
+          localStorage.removeItem("token");
+          setUserLoggedIn(false);
+        }
       }
       setLoading(false);
-    });
-    return unsubscribe;
+    };
+    checkAuthState();
   }, []);
+
+  const login = async (
+    userName: string,
+    password: string
+  ): Promise<loginReturnType> => {
+    const userData = await handleLogin(userName, password);
+    console.log("USER DATA AFTER LOGIN: ", userData);
+    if (userData.token) {
+      setCurrentUser({ userName: userData.userName, userId: userData.userId });
+      setUserLoggedIn(true);
+    }
+    return userData;
+  };
+
+  const signup = async (userName: string, password: string) => {
+    const userData = await handleSignup(userName, password);
+    if (userData.token) {
+      setCurrentUser({ userName: userData.userName, userId: userData.userId });
+      setUserLoggedIn(true);
+    } else {
+      console.error("Signup failed:", userData.message);
+      throw new Error(userData.message);
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token"); // Remove the stored JWT
+    setCurrentUser(null); // Reset user context
+    setUserLoggedIn(false); // Update logged in status
+  };
 
   const value = {
     userLoggedIn,
-    isEmailUser,
-    isGoogleUser,
-    userId, // Include the userId in the context value
     currentUser,
     setCurrentUser,
-    userName,
-    setUserName,
+    login,
+    signup,
+    logout,
   };
 
   return (

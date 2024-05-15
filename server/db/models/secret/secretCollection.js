@@ -7,7 +7,7 @@ export const createSecret = async (secretData) => {
   console.log("USER DATA on SecretModeL: ", secretData);
   try {
     const newSecret = {
-      _id: secretData.secretId, // Use Firebase ID as MongoDB document ID
+      _id: secretData.secretId,
       userId: secretData.userId,
       userName: secretData.userName,
       title: secretData.title,
@@ -21,7 +21,7 @@ export const createSecret = async (secretData) => {
   }
 };
 
-export const getSecretsByUserId = async (userName) => {
+export const getSecretsByUserName = async (userName) => {
   try {
     const query = {
       $or: [{ userName: userName }, { "permissions.userName": userName }],

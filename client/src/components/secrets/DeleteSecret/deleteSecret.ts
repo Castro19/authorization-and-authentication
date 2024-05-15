@@ -1,5 +1,7 @@
-export default async function (userId: number, secretId: number) {
+export default async function deleteSecret(userId: string, secretId: string) {
   try {
+    console.log("USER IDD: ", userId);
+    console.log("SECRET IDD: ", secretId);
     const response = await fetch(
       `http://localhost:4000/secrets/${userId}_${secretId}`,
       {

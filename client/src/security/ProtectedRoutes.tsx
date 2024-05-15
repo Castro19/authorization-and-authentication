@@ -5,18 +5,18 @@ import { useAuth } from "../contexts/authContext";
 type ProtectedRouteProps = PropsWithChildren;
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { userLoggedIn, userName } = useAuth();
-  console.log("USERNAME: ", userName);
+  const { userLoggedIn, currentUser } = useAuth();
+  console.log("USERNAME: ", currentUser?.userName);
   const navigate = useNavigate();
   const { userName: urlUserName } = useParams(); // This captures the userId from the URL
 
   useEffect(() => {
     if (!userLoggedIn) {
       navigate("/login", { replace: true });
-    } else if (userLoggedIn && userName !== urlUserName) {
-      navigate(`/${userName}`); // Redirects to the correct user page
+    } else if (userLoggedIn && currentUser?.userName !== urlUserName) {
+      navigate(`/${currentUser?.userName}`); // Redirects to the correct user page
     }
-  }, [navigate, userLoggedIn, userName, urlUserName]);
+  }, [navigate, userLoggedIn, currentUser?.userName, urlUserName]);
 
   return children;
 };

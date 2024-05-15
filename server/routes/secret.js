@@ -57,8 +57,8 @@ router.delete("/:secretId", async (req, res) => {
     const id = req.params.secretId;
     const [userId, secretId] = id.split("_");
 
-    console.log("USERID: ", userId);
-    console.log("SECRETID: ", secretId);
+    console.log("USERIDD: ", userId);
+    console.log("SECRETIDD: ", secretId);
     const result = await deleteSecret(userId, secretId);
     res.send({ result: result });
   } catch (error) {
@@ -66,7 +66,5 @@ router.delete("/:secretId", async (req, res) => {
     console.error("Failed to Delete Secret: ", error);
   }
 });
-
-// Helpers:
 
 export default router;

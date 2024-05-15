@@ -1,7 +1,9 @@
-import React from "react";
 import { CiEdit } from "react-icons/ci";
 
-const EditSecret = ({ onEdit }) => {
+interface EditSecretProps {
+  onEdit: () => void;
+}
+const EditSecret = ({ onEdit }: EditSecretProps) => {
   return (
     <button
       onClick={onEdit}

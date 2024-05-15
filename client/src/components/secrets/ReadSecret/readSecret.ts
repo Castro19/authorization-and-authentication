@@ -1,5 +1,12 @@
-export default async function fetchSecrets({ params }) {
-  const userName = params.userName;
+import { LoaderFunctionArgs } from "react-router-dom";
+
+interface FetchSecretsInput {
+  userName: string;
+}
+export const fetchSecrets = async ({
+  params,
+}: LoaderFunctionArgs<FetchSecretsInput>): Promise<any> => {
+  const { userName } = params;
   try {
     const response = await fetch(`http://localhost:4000/secrets/${userName}`);
     if (!response.ok) {
@@ -12,4 +19,4 @@ export default async function fetchSecrets({ params }) {
   } catch (error) {
     console.log(`Error: ${error}`);
   }
-}
+};

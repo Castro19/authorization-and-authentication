@@ -1,13 +1,9 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  sendEmailVerification,
-  updatePassword,
   signInWithPopup,
   GoogleAuthProvider,
   UserCredential,
-  ActionCodeSettings,
 } from "firebase/auth";
 import { auth } from "./firebase";
 // import sendUserToDB from "./sendUser";
@@ -40,27 +36,4 @@ export const doSignInWithGoogle = async (): Promise<UserCredential> => {
 
 export const doSignOut = async (): Promise<void> => {
   return auth.signOut();
-};
-
-export const doPasswordReset = async (email: string): Promise<void> => {
-  return sendPasswordResetEmail(auth, email);
-};
-
-export const doPasswordChange = async (password: string): Promise<void> => {
-  if (auth.currentUser) {
-    return updatePassword(auth.currentUser, password);
-  } else {
-    throw new Error("No user is currently signed in.");
-  }
-};
-
-export const doSendEmailVerification = async (): Promise<void> => {
-  if (auth.currentUser) {
-    const actionCodeSettings: ActionCodeSettings = {
-      url: `${window.location.origin}/home`,
-    };
-    return sendEmailVerification(auth.currentUser, actionCodeSettings);
-  } else {
-    throw new Error("No user is currently signed in.");
-  }
 };

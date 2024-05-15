@@ -8,26 +8,19 @@ import { Navigate, Link } from "react-router-dom";
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
 import { ErrorMessage } from "../../components/register/ErrorMessage";
-
 // Importing Contexts
 import { useAuth } from "@/contexts/authContext";
-
 // Importing Auth Functions
-import {
-  doSignInWithEmailAndPassword,
-  doSignInWithGoogle,
-} from "@/firebase/auth";
-import getUserInfo from "./fetchUserInfo";
+import { doSignInWithGoogle } from "@/firebase/auth";
 
 export function LoginFormDemo() {
   const auth = useAuth();
-  const [userNameReady, setUserNameReady] = useState(false);
 
   const [isSigningIn, setIsSigningIn] = useState(false);
 
-  const [email, setEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [signInError, setSignInError] = useState("");
+  const [signInError, setSignInError] = useState<string | undefined>("");
 
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const togglePasswordVisibility = () => {
@@ -39,43 +32,18 @@ export function LoginFormDemo() {
 
     setSignInError("");
 
-    if (!email || !password) {
+    if (!userName || !password) {
       setSignInError("Please fill in all fields.");
       return;
     }
 
     if (!isSigningIn) {
-      try {
-        setIsSigningIn(true);
-        const userCredentials = await doSignInWithEmailAndPassword(
-          email,
-          password
-        );
-        try {
-          const userId = userCredentials.user.uid;
-          const userDetails = await getUserInfo(userId, "userId"); // Make sure to specify 'userId' as the type
-          const userName = userDetails.userName;
-          auth.setUserName(userName);
-          setUserNameReady(true); // Set the flag true here
-          setSignInError(""); // Clear error on successful sign in
-        } catch (error) {
-          console.log("Could not find userName:", error);
-        }
-      } catch (error) {
-        console.error(error);
-        setIsSigningIn(false); // Update signing in state upon error
-
-        // Check the error code and set a user-friendly error message
-        if (error.code === "auth/invalid-credential") {
-          setSignInError(
-            "The credentials you provided are invalid. Please try again."
-          );
-        } else {
-          // For other errors, you may want to display a generic error message
-          setSignInError(
-            "Failed to sign in. Please check your credentials and try again."
-          );
-        }
+      setIsSigningIn(true);
+      const userData = await auth.login(userName, password);
+      setIsSigningIn(false);
+      console.log("User DATTAAAA: ", userData);
+      if (userData.code) {
+        setSignInError(userData.message);
       }
     }
   };
@@ -91,8 +59,8 @@ export function LoginFormDemo() {
 
   return (
     <div>
-      {auth.userLoggedIn && userNameReady && auth.userName && (
-        <Navigate to={`/${auth.userName}`} replace={true} />
+      {auth.userLoggedIn && auth.currentUser?.userName && (
+        <Navigate to={`/${auth.currentUser?.userName}`} replace={true} />
       )}
       <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
@@ -104,13 +72,13 @@ export function LoginFormDemo() {
 
         <form className="my-8" onSubmit={handleSubmit}>
           <LabelInputContainer className="mb-4">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="userName">Username</Label>
             <Input
-              id="email"
-              placeholder="example@gmail.com"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="userName"
+              placeholder="Test123"
+              type="userName"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
             />
           </LabelInputContainer>
           <LabelInputContainer className="mb-4">

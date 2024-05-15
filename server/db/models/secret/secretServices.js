@@ -17,7 +17,7 @@ export const addSecret = async (secretData) => {
 // Read
 export const fetchUserSecrets = async (userName) => {
   try {
-    const secrets = await SecretModel.getSecretsByUserId(userName);
+    const secrets = await SecretModel.getSecretsByUserName(userName);
     const modifiedSecrets = secrets.map((secret) => ({
       secretId: secret._id,
       userId: secret.userId,
@@ -25,6 +25,7 @@ export const fetchUserSecrets = async (userName) => {
       title: secret.title,
       description: secret.description,
     }));
+    console.log("MODIFED SECRETS: ", modifiedSecrets);
     return modifiedSecrets;
   } catch (error) {
     throw new Error("Service error: " + error.message);

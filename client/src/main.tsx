@@ -16,7 +16,7 @@ import SecretsPage from "./pages/home/secrets/SecretsPage.tsx";
 // Security
 import ProtectedRoute from "./security/ProtectedRoutes.tsx";
 // Loaders:
-import fetchSecrets from "./components/secrets/ReadSecret/readSecret.ts";
+import { fetchSecrets } from "./components/secrets/ReadSecret/readSecret.ts";
 
 import "./index.css";
 

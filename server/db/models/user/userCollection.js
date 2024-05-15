@@ -3,15 +3,14 @@ const userCollection = db.collection("users");
 
 // Create
 export const createUser = async (userData) => {
-  console.log("USER DATA on UserModeL: ", userData);
   try {
     const newUser = {
-      _id: userData.firebaseUserId, // Use Firebase ID as MongoDB document ID
+      userId: userData.userId,
       userName: userData.userName,
+      hashedPassword: userData.hashedPassword,
     };
 
-    const result = await userCollection.insertOne(newUser);
-    return result;
+    await userCollection.insertOne(newUser);
   } catch (error) {
     throw new Error("Error creating a new user: " + error.message);
   }
@@ -20,7 +19,7 @@ export const createUser = async (userData) => {
 // Read
 export const findUserById = async (userId) => {
   try {
-    const userDocument = await userCollection.findOne({ _id: userId });
+    const userDocument = await userCollection.findOne({ userId: userId });
     if (!userDocument) {
       throw new Error("No user found with ID: " + userId);
     }

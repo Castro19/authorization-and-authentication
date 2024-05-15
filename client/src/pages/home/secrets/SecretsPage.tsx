@@ -7,13 +7,16 @@ import { SecretsType } from "@/types";
 import styles from "./SecretsPage.module.css";
 
 const SecretsPage = () => {
-  const secretsFetched = useLoaderData();
+  const secretsFetched = useLoaderData() as SecretsType[];
+  console.log("secrets FETCHED!!", secretsFetched);
   const [trigger, setTrigger] = useState(false);
   const [secrets, setSecrets] = useState<SecretsType[]>(secretsFetched);
-  const [editSecret, setEditSecret] = useState<SecretsType | null>(null); // State to manage the secret being edited
+  const [editSecret, setEditSecret] = useState<SecretsType | undefined>(
+    undefined
+  ); // State to manage the secret being edited
 
   const handleAddSecret = () => {
-    setEditSecret(null);
+    setEditSecret(undefined);
     setTrigger(true);
   };
 

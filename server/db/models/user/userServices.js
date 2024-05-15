@@ -1,10 +1,11 @@
 import * as UserModel from "./userCollection.js";
+import { v4 as uuidv4 } from "uuid";
 
 export const addUser = async (userData) => {
   try {
-    console.log("User data: ", userData);
-    const result = await UserModel.createUser(userData);
-    return { message: "User created successfully", userId: result.insertedId };
+    userData["userId"] = uuidv4(); // Generate a UUID
+    await UserModel.createUser(userData);
+    return { userId: userData["userId"], userName: userData.userName };
   } catch (error) {
     throw new Error("Service error: " + error.message);
   }
@@ -22,6 +23,6 @@ export const getUser = async (identifier, type) => {
     }
     return user;
   } catch (error) {
-    throw new Error("Service error: " + error.message);
+    return null;
   }
 };

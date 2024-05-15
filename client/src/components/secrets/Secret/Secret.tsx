@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "./Secrets.module.css";
-import DeleteSecret from "../DeleteSecret/DeleteSecret";
-import deleteSecret from "../DeleteSecret/deleteSecret";
+import RemoveSecret from "../DeleteSecret/RemoveSecret";
 import EditSecret from "../EditSecret/EditSecret";
 import { SecretsType } from "@/types";
 
@@ -12,22 +11,8 @@ interface SecretsProps {
 }
 
 const Secret = ({ setSecrets, secret, triggerEdit }: SecretsProps) => {
-  const handleDelete = async (userId: number, secretId: number) => {
-    console.log("On UserID: ", userId);
-    console.log("Deleting SecretID: ", secretId);
-    try {
-      const data = await deleteSecret(userId, secretId);
-      setSecrets((prevSecrets) =>
-        prevSecrets.filter((s) => s.secretId !== secretId)
-      );
-      console.log("responseData: ", data);
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-  };
-
   const handleEdit = () => {
-    triggerEdit(secret); // Assume this function sets the editing state and the current secret to edit
+    triggerEdit(secret); // Function sets the editing state and the current secret to edit
   };
 
   return (
@@ -37,10 +22,10 @@ const Secret = ({ setSecrets, secret, triggerEdit }: SecretsProps) => {
       <p className={styles.text}>{secret.description}</p>
       <div className={styles.iconContainer}>
         <div className={styles.deleteSecretIcon}>
-          <DeleteSecret
+          <RemoveSecret
             secretId={secret.secretId}
             userId={secret.userId}
-            onDelete={handleDelete}
+            setSecrets={setSecrets}
           />
         </div>
         <div className={styles.editSecretIcon}>

@@ -1,37 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/authContext";
-import { doSignOut } from "@/firebase/auth";
 import { Button } from "../../components/ui/button";
 import styles from "./Home.module.css";
-import fetchUserName from "@/components/users/fetchUsername.ts";
+// import { getUserInfo } from "@/components/register/helpers/fetchUserInfo";
 
 const Home: React.FC = () => {
   const [secretsVisibe, setSecretsVisible] = useState<boolean>(false);
-  const { currentUser, userId, userName, setUserName } = useAuth();
+  const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getUserName = async (userId) => {
-      const userNameFetched = await fetchUserName(userId);
-      setUserName(userNameFetched);
-    };
-    getUserName(userId);
-  }, []);
-
   const handleSignOut = () => {
-    doSignOut().then(() => {
-      navigate("/");
-    });
+    logout();
+    navigate("/login");
   };
 
   const handleViewSecrets = (secretsVisibe: boolean) => {
     console.log("Button Clicked for secrets!");
     if (!secretsVisibe) {
-      navigate(`/${userName}/secrets`);
+      navigate(`/${currentUser?.userName}/secrets`);
       setSecretsVisible(true);
     } else {
-      navigate(`/${userName}`);
+      navigate(`/${currentUser?.userName}`);
       setSecretsVisible(false);
     }
   };
@@ -39,8 +29,7 @@ const Home: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.homeTitle}>
-        Hello {currentUser?.displayName || currentUser?.email}, you are now
-        logged in.
+        Hello {currentUser?.userName}, you are now logged in.
       </div>
       <div className={styles.buttonFlexContainer}>
         <Button onClick={() => handleViewSecrets(secretsVisibe)}>
