@@ -1,3 +1,5 @@
+import addAuthHeader from "@/security/authHeader";
+
 type updateSecretType = {
   userId: string;
   secretId: string;
@@ -7,9 +9,9 @@ type updateSecretType = {
 export default async function updateSecret(secret: updateSecretType) {
   const options = {
     method: "PUT",
-    headers: {
+    headers: addAuthHeader({
       "Content-Type": "application/json",
-    },
+    }),
     body: JSON.stringify({
       userId: secret.userId,
       title: secret.title,

@@ -12,7 +12,7 @@ interface CustomToken {
 }
 
 // Define types for the context
-type loginReturnType = {
+type registerReturnType = {
   userId?: string;
   userName?: string;
   code?: string;
@@ -23,8 +23,8 @@ interface AuthContextType {
   userLoggedIn: boolean;
   currentUser: User | null;
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
-  login: (userName: string, password: string) => Promise<loginReturnType>;
-  signup: (userName: string, password: string) => Promise<void>;
+  login: (userName: string, password: string) => Promise<registerReturnType>;
+  signup: (userName: string, password: string) => Promise<registerReturnType>;
   logout: () => void;
 }
 
@@ -90,9 +90,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (
     userName: string,
     password: string
-  ): Promise<loginReturnType> => {
+  ): Promise<registerReturnType> => {
     const userData = await handleLogin(userName, password);
-    console.log("USER DATA AFTER LOGIN: ", userData);
     if (userData.token) {
       setCurrentUser({ userName: userData.userName, userId: userData.userId });
       setUserLoggedIn(true);
@@ -100,15 +99,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return userData;
   };
 
-  const signup = async (userName: string, password: string) => {
+  const signup = async (
+    userName: string,
+    password: string
+  ): Promise<registerReturnType> => {
     const userData = await handleSignup(userName, password);
     if (userData.token) {
       setCurrentUser({ userName: userData.userName, userId: userData.userId });
       setUserLoggedIn(true);
     } else {
       console.error("Signup failed:", userData.message);
-      throw new Error(userData.message);
     }
+    return userData;
   };
 
   const logout = () => {

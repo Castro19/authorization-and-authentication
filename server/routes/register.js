@@ -17,6 +17,14 @@ router.post("/signup", async (req, res) => {
   if (!userName || !password) {
     return res.status(400).send("Username and password required");
   }
+  const user = await getUser(userName, "userId");
+  if (user) {
+    return res.status(401).json({
+      code: "auth/username-taken",
+      message:
+        "Sorry, this username is taken. Please choose a different username.",
+    });
+  }
   // Check for the following and assign an `error.code` if:
   // 1. if username is already taken "auth/username-already-in-use"
   // 2. weak password "auth/weak-password"

@@ -1,3 +1,5 @@
+import addAuthHeader from "@/security/authHeader";
+
 export default async function postSecret(
   userId: string,
   userName: string,
@@ -6,9 +8,9 @@ export default async function postSecret(
 ) {
   const options = {
     method: "POST",
-    headers: {
+    headers: addAuthHeader({
       "Content-Type": "application/json",
-    },
+    }),
     body: JSON.stringify({
       userId,
       userName,

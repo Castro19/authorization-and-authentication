@@ -1,3 +1,5 @@
+import addAuthHeader from "@/security/authHeader";
+
 export default async function deleteSecret(userId: string, secretId: string) {
   try {
     console.log("USER IDD: ", userId);
@@ -6,6 +8,9 @@ export default async function deleteSecret(userId: string, secretId: string) {
       `http://localhost:4000/secrets/${userId}_${secretId}`,
       {
         method: "DELETE",
+        headers: addAuthHeader({
+          "Content-Type": "application/json",
+        }),
       }
     );
 

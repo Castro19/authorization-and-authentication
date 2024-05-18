@@ -11,7 +11,7 @@ import HomePage from "./pages/register/HomePage.tsx";
 import { SignupFormDemo } from "./pages/register/SignUpForm.tsx";
 import { LoginFormDemo } from "./pages/register/LoginForm.tsx";
 import Home from "./pages/home/Home.tsx";
-import SecretsPage from "./pages/home/secrets/SecretsPage.tsx";
+import SecretsPage from "./pages/secrets/SecretsPage.tsx";
 
 // Security
 import ProtectedRoute from "./security/ProtectedRoutes.tsx";

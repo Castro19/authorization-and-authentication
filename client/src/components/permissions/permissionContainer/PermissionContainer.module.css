@@ -1,0 +1,103 @@
+/* SetPermissionContainer.module.css */
+
+.container {
+  padding: 20px;
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table th {
+  background-color: #f2f2f2;
+  width: 33%; /* Ensure all columns have the same width */
+}
+
+.tableCell {
+  padding: 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.btnTableCell {
+  display: flex;
+  gap: 10px; /* Add gap between buttons */
+  align-items: center;
+}
+
+.checkboxContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.label {
+  margin-left: 5px;
+  font-size: 14px;
+  color: #333;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+}
+
+.grantButton,
+.removeButton {
+  padding: 5px 10px;
+  margin-right: 5px;
+  font-size: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.grantButton {
+  background-color: #007bff;
+  color: white;
+}
+
+.grantButton:hover {
+  background-color: #0056b3;
+}
+
+.removeButton {
+  background-color: #dc3545;
+  color: white;
+}
+
+.removeButton:hover {
+  background-color: #c82333;
+}
+
+.closeButton {
+  padding: 5px 10px;
+  margin-top: 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: #6c757d;
+  color: white;
+}
+
+.closeButton:hover {
+  background-color: #5a6268;
+}

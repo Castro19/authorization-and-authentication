@@ -2,6 +2,7 @@ import db from "../../connection.js";
 import { ObjectId } from "mongodb"; // Make sure this matches your import setup
 
 const secretCollection = db.collection("secrets");
+const userCollection = db.collection("users");
 
 export const createSecret = async (secretData) => {
   console.log("USER DATA on SecretModeL: ", secretData);
@@ -12,6 +13,7 @@ export const createSecret = async (secretData) => {
       userName: secretData.userName,
       title: secretData.title,
       description: secretData.description,
+      permissions: [{ userId: secretData.userId, roles: ["admin"] }],
     };
 
     const result = await secretCollection.insertOne(newSecret);
@@ -25,6 +27,20 @@ export const getSecretsByUserName = async (userName) => {
   try {
     const query = {
       $or: [{ userName: userName }, { "permissions.userName": userName }],
+    };
+    const secrets = await secretCollection.find(query).toArray();
+
+    return secrets;
+  } catch (error) {
+    throw new Error("Error Fetching Secrets: " + error.message);
+  }
+};
+
+export const getSecretsByUserId = async (userId) => {
+  console.log("USER ID: ", userId);
+  try {
+    const query = {
+      $or: [{ userId: userId }, { "permissions.userId": userId }],
     };
     const secrets = await secretCollection.find(query).toArray();
 

@@ -26,3 +26,12 @@ export const getUser = async (identifier, type) => {
     return null;
   }
 };
+
+export const fetchAllUsers = async () => {
+  try {
+    const users = await UserModel.findAllUsers();
+    return users;
+  } catch (error) {
+    throw new Error("Service error: " + error.message);
+  }
+};

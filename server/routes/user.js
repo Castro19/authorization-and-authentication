@@ -1,6 +1,10 @@
 import express from "express";
-
 const router = express.Router();
+import { fetchAllUsers } from "../db/models/user/userServices.js";
+router.get("/", async (req, res) => {
+  const users = await fetchAllUsers();
+  res.status(200).json({ message: "Fetch all Users is working", users: users });
+});
 
 export default router;
 

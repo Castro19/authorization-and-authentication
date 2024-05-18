@@ -7,6 +7,7 @@ dotenv.config();
 import registers from "./routes/register.js";
 import users from "./routes/user.js";
 import secrets from "./routes/secret.js";
+import permissions from "./routes/permission.js";
 
 // Helpers
 import { authenticateUser } from "./helpers/generateJWT.js";
@@ -20,7 +21,8 @@ app.use(express.json());
 // Routes;
 app.use("/registers", registers);
 app.use("/users", users);
-app.use("/secrets", secrets);
+app.use("/secrets", authenticateUser, secrets);
+app.use("/permissions", authenticateUser, permissions);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);

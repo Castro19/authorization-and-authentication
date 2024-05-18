@@ -1,3 +1,4 @@
+import addAuthHeader from "@/security/authHeader";
 import { LoaderFunctionArgs } from "react-router-dom";
 
 interface FetchSecretsInput {
@@ -7,8 +8,17 @@ export const fetchSecrets = async ({
   params,
 }: LoaderFunctionArgs<FetchSecretsInput>): Promise<any> => {
   const { userName } = params;
+  const options = {
+    method: "GET",
+    headers: addAuthHeader({
+      "Content-Type": "application/json",
+    }),
+  };
   try {
-    const response = await fetch(`http://localhost:4000/secrets/${userName}`);
+    const response = await fetch(
+      `http://localhost:4000/secrets/${userName}`,
+      options
+    );
     if (!response.ok) {
       const errorData = await response.json();
       console.error("Backend Uploading secret", errorData);

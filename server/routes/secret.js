@@ -6,6 +6,7 @@ import {
   updateSecret,     // Update
   deleteSecret,     // Delete
 } from "../db/models/secret/secretServices.js";
+
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -29,12 +30,13 @@ router.post("/", async (req, res) => {
 
 // Read: Fetch all Secrets
 router.get("/:userName", async (req, res) => {
+  const userName = req.params.userName;
   try {
-    const userName = req.params.userName;
     const secrets = await fetchUserSecrets(userName);
+    console.log("SECRETS FETCHED: ", secrets);
     res.json(secrets);
   } catch (error) {
-    res.send({ message: error });
+    res.status(500).send({ message: error.message });
   }
 });
 

@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./Secrets.module.css";
 import RemoveSecret from "../DeleteSecret/RemoveSecret";
 import EditSecret from "../EditSecret/EditSecret";
+import ViewAllUsers from "@/components/users/ReadUsers/ViewAllUsers";
 import { SecretsType } from "@/types";
 
 interface SecretsProps {
@@ -20,22 +21,27 @@ const Secret = ({ setSecrets, secret, triggerEdit }: SecretsProps) => {
       <h2 className={styles.title}>{secret.title}</h2>
       <h4>By:{secret.userName}</h4>
       <p className={styles.text}>{secret.description}</p>
-      <div className={styles.iconContainer}>
-        <div className={styles.deleteSecretIcon}>
-          <RemoveSecret
-            secretId={secret.secretId}
-            userId={secret.userId}
-            setSecrets={setSecrets}
-          />
-        </div>
-        <div className={styles.editSecretIcon}>
-          <EditSecret onEdit={handleEdit} />
-        </div>
-      </div>
-      <div className={styles.idContainer}>
-        <p className={styles.userId}>User ID: {secret.userId}</p>
-        <p className={styles.userId}>Secret ID: {secret.secretId}</p>
-      </div>
+      {secret?.role.includes("admin") && (
+        <>
+          <div className={styles.iconContainer}>
+            <div className={styles.modifySecretIconContainer}>
+              <RemoveSecret
+                secretId={secret.secretId}
+                userId={secret.userId}
+                setSecrets={setSecrets}
+              />
+              <EditSecret onEdit={handleEdit} />
+            </div>
+            <div>
+              <ViewAllUsers secretId={secret.secretId} />
+            </div>
+          </div>
+          <div className={styles.idContainer}>
+            <p className={styles.userId}>User ID: {secret.userId}</p>
+            <p className={styles.userId}>Secret ID: {secret.secretId}</p>
+          </div>
+        </>
+      )}
     </div>
   );
 };

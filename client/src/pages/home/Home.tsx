@@ -6,7 +6,8 @@ import styles from "./Home.module.css";
 // import { getUserInfo } from "@/components/register/helpers/fetchUserInfo";
 
 const Home: React.FC = () => {
-  const [secretsVisibe, setSecretsVisible] = useState<boolean>(false);
+  const [secretsVisible, setSecretsVisible] = useState<boolean>(false);
+
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -15,9 +16,9 @@ const Home: React.FC = () => {
     navigate("/login");
   };
 
-  const handleViewSecrets = (secretsVisibe: boolean) => {
+  const handleViewSecrets = (secretsVisible: boolean) => {
     console.log("Button Clicked for secrets!");
-    if (!secretsVisibe) {
+    if (!secretsVisible) {
       navigate(`/${currentUser?.userName}/secrets`);
       setSecretsVisible(true);
     } else {
@@ -32,8 +33,8 @@ const Home: React.FC = () => {
         Hello {currentUser?.userName}, you are now logged in.
       </div>
       <div className={styles.buttonFlexContainer}>
-        <Button onClick={() => handleViewSecrets(secretsVisibe)}>
-          {secretsVisibe ? "Click to Hide Secrets" : "Click to View Secrets"}
+        <Button onClick={() => handleViewSecrets(secretsVisible)}>
+          {secretsVisible ? "Click to Hide Secrets" : "Click to View Secrets"}
         </Button>
         <Button onClick={handleSignOut}> Sign Out</Button>
       </div>

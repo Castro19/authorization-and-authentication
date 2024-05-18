@@ -4,6 +4,7 @@ export type SecretsType = {
   userName: string;
   title: string;
   description: string;
+  role: string[];
 };
 
 // export const secrets: SecretsType[] = [

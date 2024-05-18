@@ -1,4 +1,5 @@
 import * as SecretModel from "./secretCollection.js";
+import * as UserModel from "../user/userCollection.js";
 
 // Create
 export const addSecret = async (secretData) => {
@@ -17,18 +18,21 @@ export const addSecret = async (secretData) => {
 // Read
 export const fetchUserSecrets = async (userName) => {
   try {
-    const secrets = await SecretModel.getSecretsByUserName(userName);
+    const user = await UserModel.findUserByUsername(userName);
+    const secrets = await SecretModel.getSecretsByUserId(user.userId);
     const modifiedSecrets = secrets.map((secret) => ({
       secretId: secret._id,
       userId: secret.userId,
       userName: secret.userName,
       title: secret.title,
       description: secret.description,
+      role: secret.permissions.find((perm) => perm.userId === user.userId)
+        .roles,
     }));
     console.log("MODIFED SECRETS: ", modifiedSecrets);
     return modifiedSecrets;
   } catch (error) {
-    throw new Error("Service error: " + error.message);
+    throw new Error("Service error Fetching Secrets: " + error.message);
   }
 };
 

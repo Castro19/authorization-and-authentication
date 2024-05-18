@@ -1,0 +1,14 @@
+.removeButton {
+  padding: 5px 10px;
+  margin-right: 5px;
+  font-size: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #dc3545;
+  color: white;
+}
+
+.removeButton:hover {
+  background-color: #c82333;
+}

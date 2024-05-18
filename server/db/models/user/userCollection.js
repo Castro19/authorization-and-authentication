@@ -41,3 +41,22 @@ export const findUserByUsername = async (username) => {
     throw new Error("Error retrieving user by username: " + error.message);
   }
 };
+
+export const findAllUsers = async () => {
+  try {
+    const userDocuments = await userCollection
+      .find({}, { projection: { userId: 1, userName: 1 } })
+      .toArray();
+    if (!userDocuments || userDocuments.length === 0) {
+      throw new Error("No users found");
+    }
+    // Transform the documents to return an array of objects with 'userID' and 'userName'
+    const users = userDocuments.map((doc) => ({
+      userId: doc.userId, // Assuming _id is the field for userID
+      userName: doc.userName,
+    }));
+    return users;
+  } catch (error) {
+    throw new Error("Error retrieving users: " + error.message);
+  }
+};

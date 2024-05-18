@@ -18,7 +18,7 @@ export function SignupFormDemo() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
-  const [signUpError, setSignupError] = useState("");
+  const [signUpError, setSignupError] = useState<string | undefined>(undefined);
   const [isRegistering, setIsRegistering] = useState(false);
 
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
@@ -52,33 +52,15 @@ export function SignupFormDemo() {
     }
 
     if (!isRegistering) {
-      try {
-        setIsRegistering(true);
-        await auth.signup(userName, password);
+      setIsRegistering(true);
+      const userData = await auth.signup(userName, password);
+      console.log("USER DATA: ", userData);
+
+      if (userData.code) {
+        setSignupError(userData.message);
+        setIsRegistering(false);
+      } else {
         setSignupError(""); // Clear error on successful registration
-        // Optionally navigate to a different page on successful registration
-      } catch (error) {
-        console.error(error);
-        console.log("Error sending user to DB: ", error);
-
-        setIsRegistering(false); // Update registering state upon error
-
-        // Firebase specific error handling
-        switch (error.code) {
-          case "auth/username-already-in-use":
-            setSignupError(
-              "The username is already in use by another account."
-            );
-            break;
-          case "auth/weak-password":
-            setSignupError(
-              "The password is too weak. Please enter a stronger password."
-            );
-            break;
-          default:
-            setSignupError("An unexpected error occurred. Please try again.");
-            break;
-        }
       }
     }
   };

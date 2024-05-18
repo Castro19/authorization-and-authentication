@@ -6,7 +6,7 @@ export default function generateAccessToken(username) {
   return new Promise((resolve, reject) => {
     jwt.sign(
       { username: username },
-      process.env.TOKEN_SECRET,
+      process.env.TOKEN_KEY,
       { expiresIn: "1d" },
       (error, token) => {
         if (error) reject(error);
@@ -20,13 +20,21 @@ export function authenticateUser(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) {
-    res.status(401).end();
+    return res
+      .status(401)
+      .json({ message: "No token provided. Authorization denied." });
   } else {
-    jwt.verify(token, process.env.TOKEN_SECRET, (error, decoded) => {
-      if (decoded) {
-        next();
+    jwt.verify(token, process.env.TOKEN_KEY, (error, decoded) => {
+      if (error) {
+        return res.status(401).json({
+          token_secret: process.env.TOKEN_KEY,
+          test: "HELLO",
+          token: token,
+          message: "Token is not valid.",
+        });
       } else {
-        res.status(401).end();
+        req.user = decoded; // Assign decoded user to request object
+        next();
       }
     });
   }
