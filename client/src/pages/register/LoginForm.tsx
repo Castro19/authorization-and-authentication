@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { cn } from "@/lib/utils";
-import { IconBrandGoogle } from "@tabler/icons-react";
 import { Navigate, Link } from "react-router-dom";
 // Importing component
 import { Label } from "../../components/ui/label";
@@ -10,8 +9,6 @@ import { Input } from "../../components/ui/input";
 import { ErrorMessage } from "../../components/register/ErrorMessage";
 // Importing Contexts
 import { useAuth } from "@/contexts/authContext";
-// Importing Auth Functions
-import { doSignInWithGoogle } from "@/firebase/auth";
 
 export function LoginFormDemo() {
   const auth = useAuth();
@@ -45,15 +42,6 @@ export function LoginFormDemo() {
       if (userData.code) {
         setSignInError(userData.message);
       }
-    }
-  };
-
-  const handleGoogleSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!isSigningIn) {
-      setIsSigningIn(true);
-      await doSignInWithGoogle();
-      setIsSigningIn(false);
     }
   };
 
@@ -112,25 +100,6 @@ export function LoginFormDemo() {
               Sign up
             </Link>
           </p>
-          <div className="flex flex-row text-center w-full my-4">
-            <div className="border-b-2 mb-2.5 mr-2 w-full"></div>
-            <div className="text-sm font-bold w-fit">OR</div>
-            <div className="border-b-2 mb-2.5 ml-2 w-full"></div>
-          </div>
-
-          <div className="flex flex-col">
-            <button
-              onClick={(e) => handleGoogleSignIn(e)}
-              className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-              type="button"
-            >
-              <IconBrandGoogle className="w-4 text-neutral-800 dark:text-neutral-300" />
-              <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                Login in with Google
-              </span>
-              <BottomGradient />
-            </button>
-          </div>
         </form>
       </div>
     </div>

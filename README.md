@@ -2,57 +2,54 @@
 
 ## Introduction
 
-- This project repo can be forked or cloned and instantly be installed into your project application with minimal effort.
+- In the web applications that I have previously built, I have always had a strong emphasis on building and launching features at a rapid pace without much consideration to implementing and testing the application's security.
+- In this project, I plan on changing this and building a simple web application with a strong emphasis on security.
 
-- Utilizing React Typescript, React Router, Tailwind CSS, Shadcn UI, Framer Motion, and Aceternity UI. This project provides a simplistic and modern look
+## Features
 
-![SignUp](https://live.staticflickr.com/65535/53665681325_a91226281c.jpg)
+1. **Authorization**: Utilizing Open source software such as `Bcrypt` to hash user passwords for authentication and store the hashed passwords in MongoDB.
+2. **Access Control**: Allowing users to securely grant and remove specific privileges based on Role Based Access Control (`RBAC`).
+3. **Penetration Testing**: Trying to break my application in any way by using Cross-site scripting (`XSS`)
 
-![Login](https://live.staticflickr.com/65535/53664353417_6acbfdf77a.jpg)
+## Tech Stack
 
-![User Logged In](https://live.staticflickr.com/65535/53664353412_7cc1a7150b.jpg)
+- **Frontend**: React Typescript and JSON WEB tokens (JWT)
+  - Additional: React Router, Tailwind CSS, Shadcn UI, Framer Motion, and Aceternity UI
+- **Backend**: Node JS, Express, Bcrypt
+- **Database**: MongoDB
 
 ## Installation & Setup
 
 1.  **Clone the Repo:**
 
-```
-git clone https://github.com/Castro19/Authorize-Users-project.git
-```
+    ```
+    git clone https://github.com/Castro19/Authorize-Users-project.git
+    ```
 
-2. **Move into the client folder:**
+2.  **Install Packages in root folder:**
 
-```
-cd Authorize-Users-project/$'\025'client
-```
+    ```
+    npm install
+    ```
 
-2. **Install Packages:**
+3.  **Install Packages on Client and Server:**
 
-```
-npm install
-```
+    ```
+    npm run install: all
+    ```
 
-3. **Configure Firebase:**
+4.  **Run the Project**
 
-- Go to your [firebase console](https://console.firebase.google.com/u/0/)
+    ```
+    npm start
+    ```
 
-  - Click `add project`
-  - Follow their guidelines
+## Project Display
 
-- Once you create your project, a config ffile should be ready for you.
+![SignUp](/docs/imgs/signup.png)
 
-  - In your newly created Firebase project, click on the left sidebar for the option of `Project Settings`.
-  - Scroll down until you are at the `Your Apps section` where you will `Add app`
-  - Select the web with </> symbols. Click
-  - Here you should get the `SDK setup and configuration`
-  - Copy your firebaseConfig options.
+![Login](/docs/imgs/login.png)
 
-- Now that you have your firebase configuration file, go into the sample.env and update the changes here.
+![User Logged In](/docs/imgs/home.png)
 
-- Finally rename `sample.env` to be `.env`
-
-4. **Run the Project**
-
-```
-npm run dev
-```
+![Setting up Access Control](/docs/imgs/permissions.png)

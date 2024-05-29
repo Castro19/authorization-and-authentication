@@ -1,21 +1,18 @@
-import { User } from "@/types";
 import styles from "./SetPermissionForm.module.css";
-import { ChangeEvent, MouseEvent } from "react";
+import { ChangeEvent } from "react";
 interface SetPermissionsProps {
-  user: User;
   permissions: { [key: string]: boolean };
   handleCheckboxChange: (
     e: ChangeEvent<HTMLInputElement>,
     option: string
   ) => void;
-  handleSetPermissions: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
 const SetPermissionForm = ({
   permissions,
   handleCheckboxChange,
 }: SetPermissionsProps) => {
-  const permissionOptions = ["admin", "viewer"];
+  const permissionOptions = ["admin", "editor", "viewer"];
 
   return (
     <span className={styles.checkboxContainer}>

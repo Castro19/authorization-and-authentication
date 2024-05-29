@@ -13,13 +13,26 @@ export const createSecret = async (secretData) => {
       userName: secretData.userName,
       title: secretData.title,
       description: secretData.description,
-      permissions: [{ userId: secretData.userId, roles: ["admin"] }],
+      permissions: [secretData.permissions],
     };
 
     const result = await secretCollection.insertOne(newSecret);
     return result;
   } catch (error) {
     throw new Error("Error creating a new secret: " + error.message);
+  }
+};
+
+export const getSecret = async (secretId) => {
+  try {
+    const secret = await secretCollection.findOne({
+      _id: new ObjectId(secretId),
+    });
+    console.log("SECRET FOUND: ", secret);
+    return secret;
+  } catch (error) {
+    console.error(`Error Finding Secret (${secretId}): ` + error.message);
+    return null;
   }
 };
 

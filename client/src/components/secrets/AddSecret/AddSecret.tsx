@@ -61,18 +61,24 @@ const AddEditSecret = ({
         secretTitle &&
         secretDesc
       ) {
+        const adminPermissions = {
+          userId: currentUser?.userId,
+          roles: ["admin"],
+        };
         const secretId = await postSecret(
           currentUser?.userId,
           currentUser?.userName,
           secretTitle,
-          secretDesc
+          secretDesc,
+          adminPermissions
         );
-        const newSecret = {
+        const newSecret: SecretsType = {
           userId: currentUser?.userId,
           secretId,
           userName: currentUser?.userName,
           title: secretTitle,
           description: secretDesc,
+          role: ["admin"],
         };
         setSecrets((prev) => [...prev, newSecret]);
       } else {
@@ -103,7 +109,7 @@ const AddEditSecret = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [setTrigger]);
 
   return trigger ? (
     <div className={styles.popup}>

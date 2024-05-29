@@ -16,32 +16,51 @@ const Secret = ({ setSecrets, secret, triggerEdit }: SecretsProps) => {
     triggerEdit(secret); // Function sets the editing state and the current secret to edit
   };
 
+  const renderAdminControls = () => (
+    <>
+      <div className={styles.iconContainer}>
+        <div className={styles.modifySecretIconContainer}>
+          <RemoveSecret
+            secretId={secret.secretId}
+            userId={secret.userId}
+            setSecrets={setSecrets}
+          />
+          <EditSecret onEdit={handleEdit} />
+        </div>
+        <div>
+          <ViewAllUsers secretId={secret.secretId} />
+        </div>
+      </div>
+      <div className={styles.idContainer}>
+        <p className={styles.userId}>User ID: {secret.userId}</p>
+        <p className={styles.userId}>Secret ID: {secret.secretId}</p>
+      </div>
+    </>
+  );
+
+  const renderEditorControls = () => (
+    <div className={styles.iconContainer}>
+      <div className={styles.modifySecretIconContainer}>
+        <EditSecret onEdit={handleEdit} />
+      </div>
+    </div>
+  );
+
+  const determineAccessControl = () => {
+    if (secret?.role?.includes("admin")) {
+      return renderAdminControls();
+    } else if (secret?.role?.includes("editor")) {
+      return renderEditorControls();
+    }
+    // Implicitly, if the role is "viewer" or undefined, no controls are shown
+  };
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>{secret.title}</h2>
-      <h4>By:{secret.userName}</h4>
-      <p className={styles.text}>{secret.description}</p>
-      {secret?.role.includes("admin") && (
-        <>
-          <div className={styles.iconContainer}>
-            <div className={styles.modifySecretIconContainer}>
-              <RemoveSecret
-                secretId={secret.secretId}
-                userId={secret.userId}
-                setSecrets={setSecrets}
-              />
-              <EditSecret onEdit={handleEdit} />
-            </div>
-            <div>
-              <ViewAllUsers secretId={secret.secretId} />
-            </div>
-          </div>
-          <div className={styles.idContainer}>
-            <p className={styles.userId}>User ID: {secret.userId}</p>
-            <p className={styles.userId}>Secret ID: {secret.secretId}</p>
-          </div>
-        </>
-      )}
+      <h4>By: {secret.userName}</h4>
+      <p className={styles.text}> {secret.description}</p>
+      {determineAccessControl()}
     </div>
   );
 };

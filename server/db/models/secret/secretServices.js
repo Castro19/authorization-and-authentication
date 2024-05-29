@@ -15,6 +15,13 @@ export const addSecret = async (secretData) => {
   }
 };
 
+export const findSecret = async (secretId) => {
+  try {
+    return await SecretModel.getSecret(secretId);
+  } catch (error) {
+    throw new Error("Service error Fetching Secrets: " + error.message);
+  }
+};
 // Read
 export const fetchUserSecrets = async (userName) => {
   try {
@@ -29,7 +36,7 @@ export const fetchUserSecrets = async (userName) => {
       role: secret.permissions.find((perm) => perm.userId === user.userId)
         .roles,
     }));
-    console.log("MODIFED SECRETS: ", modifiedSecrets);
+    // console.log("MODIFED SECRETS: ", modifiedSecrets);
     return modifiedSecrets;
   } catch (error) {
     throw new Error("Service error Fetching Secrets: " + error.message);

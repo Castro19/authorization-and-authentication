@@ -1,5 +1,5 @@
 export async function handleSignup(userName: string, password: string) {
-  // Now, send a request to your backend to store additional user information
+  // Now, send a request to backend to store username and hash password
   const options = {
     method: "POST",
     headers: {

@@ -6,6 +6,7 @@ import {
   updateSecret,     // Update
   deleteSecret,     // Delete
 } from "../db/models/secret/secretServices.js";
+import { hasPermissionForSecret } from "../helpers/generateJWT.js";
 
 const router = express.Router();
 
@@ -16,11 +17,17 @@ router.get("/", (req, res) => {
 // Create a secret
 router.post("/", async (req, res) => {
   try {
-    const { userId, userName, title, description } = req.body;
+    const { userId, userName, title, description, permissions } = req.body;
     if (!userId) {
       return res.status(400).send("Firebase Secret ID is required");
     }
-    const result = await addSecret({ userId, userName, title, description });
+    const result = await addSecret({
+      userId,
+      userName,
+      title,
+      description,
+      permissions,
+    });
     res.status(201).json(result);
   } catch (error) {
     res.status(500).send("Failed to create Secret: " + error.message);
@@ -33,7 +40,7 @@ router.get("/:userName", async (req, res) => {
   const userName = req.params.userName;
   try {
     const secrets = await fetchUserSecrets(userName);
-    console.log("SECRETS FETCHED: ", secrets);
+    // console.log("SECRETS FETCHED: ", secrets);
     res.json(secrets);
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -42,9 +49,22 @@ router.get("/:userName", async (req, res) => {
 
 // Update a Secret
 router.put("/:secretId", async (req, res) => {
+  const secretId = req.params.secretId;
+  const { title, description } = req.body;
+  // Get the user ID of the user making the request
+  const { userId } = req.user;
   try {
-    const secretId = req.params.secretId;
-    const { userId, title, description } = req.body;
+    // Check if the user making the request has "admin" privileges
+    const isAuthorized = await hasPermissionForSecret(userId, secretId, [
+      "admin",
+      "editor",
+    ]);
+    if (!isAuthorized) {
+      return res.status(403).json({
+        message: "Access denied. You do not have the necessary permissions.",
+      });
+    }
+
     const response = await updateSecret(userId, secretId, title, description);
     res.send(response);
   } catch (error) {
@@ -55,12 +75,20 @@ router.put("/:secretId", async (req, res) => {
 
 // Delete a Secret
 router.delete("/:secretId", async (req, res) => {
+  const id = req.params.secretId;
+  const { userId } = req.user;
   try {
-    const id = req.params.secretId;
-    const [userId, secretId] = id.split("_");
+    const [user, secretId] = id.split("_");
 
-    console.log("USERIDD: ", userId);
-    console.log("SECRETIDD: ", secretId);
+    const isAuthorized = await hasPermissionForSecret(userId, secretId, [
+      "admin",
+    ]);
+    if (!isAuthorized) {
+      return res.status(403).json({
+        message: "Access denied. You do not have the necessary permissions.",
+      });
+    }
+
     const result = await deleteSecret(userId, secretId);
     res.send({ result: result });
   } catch (error) {

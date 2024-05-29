@@ -25,14 +25,11 @@ router.post("/signup", async (req, res) => {
         "Sorry, this username is taken. Please choose a different username.",
     });
   }
-  // Check for the following and assign an `error.code` if:
-  // 1. if username is already taken "auth/username-already-in-use"
-  // 2. weak password "auth/weak-password"
-  // 3. else another error
+
   try {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const user = await addUser({ userName, hashedPassword });
+    const user = await addUser({ userName, hashedPassword }); // Add user to MongoDB Database
     // Create the JWT
     const token = jwt.sign(
       { userName: userName, userId: user.userId },
