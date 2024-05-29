@@ -12,7 +12,7 @@ import { SignupFormDemo } from "./pages/register/SignUpForm.tsx";
 import { LoginFormDemo } from "./pages/register/LoginForm.tsx";
 import Home from "./pages/home/Home.tsx";
 import SecretsPage from "./pages/secrets/SecretsPage.tsx";
-
+import BadSecretPage from "./pages/badSecrets/BadSecretPage.tsx";
 // Security
 import ProtectedRoute from "./security/ProtectedRoutes.tsx";
 // Loaders:
@@ -46,6 +46,14 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
         loader: fetchSecrets,
+      },
+      {
+        path: "/:userName/badSecrets",
+        element: (
+          <ProtectedRoute>
+            <BadSecretPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

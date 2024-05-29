@@ -13,7 +13,10 @@ export const createSecret = async (secretData) => {
       userName: secretData.userName,
       title: secretData.title,
       description: secretData.description,
-      permissions: [secretData.permissions],
+      permissions:
+        secretData.privacy !== "public"
+          ? [secretData.permissions]
+          : secretData.permissions,
     };
 
     const result = await secretCollection.insertOne(newSecret);

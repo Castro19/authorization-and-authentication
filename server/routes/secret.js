@@ -17,7 +17,8 @@ router.get("/", (req, res) => {
 // Create a secret
 router.post("/", async (req, res) => {
   try {
-    const { userId, userName, title, description, permissions } = req.body;
+    const { userId, userName, title, description, permissions, privacy } =
+      req.body;
     if (!userId) {
       return res.status(400).send("Firebase Secret ID is required");
     }
@@ -27,6 +28,7 @@ router.post("/", async (req, res) => {
       title,
       description,
       permissions,
+      privacy,
     });
     res.status(201).json(result);
   } catch (error) {

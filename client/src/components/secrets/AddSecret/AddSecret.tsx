@@ -5,7 +5,6 @@ import postSecret from "./postSecret";
 import { useAuth } from "@/contexts/authContext";
 import { SecretsType } from "@/types";
 import updateSecret from "../EditSecret/putSecret";
-
 type AddEditSecretProps = {
   trigger: boolean;
   setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,6 +17,8 @@ const AddEditSecret = ({
   setSecrets,
   editSecret,
 }: AddEditSecretProps) => {
+  const [privacy, setPrivacy] = useState("private");
+
   const popupInnerRef = useRef<HTMLDivElement>(null);
   const [secretTitle, setSecretTitle] = useState("");
   const [secretDesc, setSecretDesc] = useState("");
@@ -70,7 +71,8 @@ const AddEditSecret = ({
           currentUser?.userName,
           secretTitle,
           secretDesc,
-          adminPermissions
+          adminPermissions,
+          privacy
         );
         const newSecret: SecretsType = {
           userId: currentUser?.userId,
@@ -146,6 +148,17 @@ const AddEditSecret = ({
             onChange={(e) => setSecretDesc(e.target.value)}
             className={styles.textArea}
           />
+          <label className={styles.radioLabel}>
+            <input
+              type="radio"
+              name="public"
+              value="public"
+              checked={privacy === "public"}
+              onChange={(e) => setPrivacy(e.target.value)}
+              className={styles.radioInput}
+            />
+            Public
+          </label>
           <Button type="submit" className={styles.button}>
             {editSecret ? "Update Secret" : "Add a new Secret"}
           </Button>
