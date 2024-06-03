@@ -8,7 +8,8 @@ export default async function postSecret(
   permissions: {
     userId: string;
     roles: string[];
-  }
+  },
+  privacy: string
 ) {
   const options = {
     method: "POST",
@@ -21,6 +22,7 @@ export default async function postSecret(
       title,
       description,
       permissions,
+      privacy,
     }),
   };
   console.log("API options: ", options);

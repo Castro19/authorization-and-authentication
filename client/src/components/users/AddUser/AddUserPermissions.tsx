@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import styles from "./AddUserPermissions.module.css";
-import { User } from "@/types"; // Define these types accordingly
+import { MessageType, User } from "@/types"; // Define these types accordingly
 import SetPermissionContainer from "@/components/permissions/permissionContainer/PermissionContainer";
 // Fetch Funciton:
 import createUserPermissions from "./creatUserPermissions";
@@ -26,6 +26,7 @@ const AddUserPermissions = ({
   users,
   secretId,
 }: AddUserPermissionsProps) => {
+  const [permMessage, setPermMessage] = useState<MessageType>();
   const popupInnerRef = useRef<HTMLDivElement>(null);
   const [permissions, setPermissions] = useState<{
     [userId: string]: { [key: string]: boolean };
@@ -99,8 +100,8 @@ const AddUserPermissions = ({
   ) => {
     e.preventDefault();
     const userPermissions = permissions[userId];
-    let response = "";
-
+    let response: MessageType;
+    setPermMessage(undefined);
     if (userPermissions) {
       const selectedPermissions = Object.keys(userPermissions).filter(
         (key) => userPermissions[key]
@@ -114,11 +115,12 @@ const AddUserPermissions = ({
           secretId,
           selectedPermissions
         );
-      } else if (option === "remove") {
+      } else {
         console.log("REMOVING");
         response = await removeUserPermission(userId, secretId);
       }
       console.log("RESPONSE FROM SENDING DATA PERMISSIONS: ", response);
+      setPermMessage(response);
     }
     setPermissionsUpdated(!permissionsUpdated);
   };
@@ -135,6 +137,7 @@ const AddUserPermissions = ({
           handleCheckboxChange={handleCheckboxChange}
           handleSetPermissions={handleSetPermissions}
         />
+        <div>{permMessage !== undefined && permMessage.message}</div>
       </div>
     </div>
   ) : null;

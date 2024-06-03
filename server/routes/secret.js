@@ -17,7 +17,8 @@ router.get("/", (req, res) => {
 // Create a secret
 router.post("/", async (req, res) => {
   try {
-    const { userId, userName, title, description, permissions } = req.body;
+    const { userId, userName, title, description, permissions, privacy } =
+      req.body;
     if (!userId) {
       return res.status(400).send("Firebase Secret ID is required");
     }
@@ -27,6 +28,7 @@ router.post("/", async (req, res) => {
       title,
       description,
       permissions,
+      privacy,
     });
     res.status(201).json(result);
   } catch (error) {
@@ -62,6 +64,7 @@ router.put("/:secretId", async (req, res) => {
     if (!isAuthorized) {
       return res.status(403).json({
         message: "Access denied. You do not have the necessary permissions.",
+        code: 403,
       });
     }
 
@@ -86,6 +89,7 @@ router.delete("/:secretId", async (req, res) => {
     if (!isAuthorized) {
       return res.status(403).json({
         message: "Access denied. You do not have the necessary permissions.",
+        code: 403,
       });
     }
 

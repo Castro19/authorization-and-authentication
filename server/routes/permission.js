@@ -45,11 +45,12 @@ router.post("/", async (req, res) => {
     if (!isAuthorized) {
       return res.status(403).json({
         message: "Access denied. You do not have the necessary permissions.",
+        code: 403,
       });
     }
     // If we get here, the user has admin privilegs so make the change to the database to modify the secret's permissions
     await managePermission(permissionData, "upsert"); // Include the user making the request
-    res.json({ message: "Permissions updated successfully" });
+    res.json({ message: "Permissions updated successfully", code: 201 });
   } catch (error) {
     res.status(500).send("Failed to update Permission: " + error.message);
     console.error("Failed to update Permission: ", error);
@@ -69,10 +70,11 @@ router.delete("/", async (req, res) => {
     if (!isAuthorized) {
       return res.status(403).json({
         message: "Access denied. You do not have the necessary permissions.",
+        code: 403,
       });
     }
     await managePermission(permissionData, "delete");
-    res.json({ message: "Permissions deleted successfully" });
+    res.json({ message: "Permissions deleted successfully", code: 202 });
   } catch (error) {
     res.status(500).send("Failed to delete Permission: " + error.message);
     console.error("Failed to delete Permission: ", error);

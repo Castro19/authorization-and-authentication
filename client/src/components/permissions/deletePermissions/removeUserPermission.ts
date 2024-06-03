@@ -1,6 +1,10 @@
 import addAuthHeader from "@/security/authHeader";
+import { MessageType } from "@/types";
 
-async function removeUserPermission(userId: string, secretId: string) {
+async function removeUserPermission(
+  userId: string,
+  secretId: string
+): Promise<MessageType> {
   const options = {
     method: "DELETE",
     headers: addAuthHeader({
@@ -12,18 +16,14 @@ async function removeUserPermission(userId: string, secretId: string) {
     }),
   };
   console.log("Permission Options for Request: ", options);
-  try {
-    const response = await fetch(`http://localhost:4000/permissions`, options);
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.log(`Error: `, errorData);
-      throw new Error("" + errorData.message);
-    }
-    const responseData = await response.json();
-    return responseData;
-  } catch (error) {
-    console.log(`Error: `, error);
+  const response = await fetch(`http://localhost:4000/permissions`, options);
+  if (!response.ok) {
+    const errorData: MessageType = await response.json();
+    console.log(`Error: `, errorData);
+    return errorData;
   }
+  const responseData = await response.json();
+  return responseData;
 }
 
 export default removeUserPermission;

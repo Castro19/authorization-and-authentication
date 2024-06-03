@@ -1,10 +1,29 @@
 import * as SecretModel from "./secretCollection.js";
 import * as UserModel from "../user/userCollection.js";
-
+import { fetchAllUsers } from "../user/userServices.js";
 // Create
 export const addSecret = async (secretData) => {
   try {
     console.log("Secret data: ", secretData);
+    if (secretData.privacy === "public") {
+      const users = await fetchAllUsers();
+
+      const permissions = [
+        // Guarantee the admin permission for the secret owner
+        { userId: secretData.userId, roles: ["admin"] },
+
+        // Map the rest of the users to viewers, excluding the owner
+        ...users
+          .filter((user) => user.userId !== secretData.userId)
+          .map((user) => ({
+            userId: user.userId,
+            roles: ["viewer"],
+          })),
+      ];
+
+      secretData.permissions = permissions;
+    }
+
     const result = await SecretModel.createSecret(secretData);
     return {
       message: "Secret created successfully",

@@ -57,7 +57,7 @@ export async function hasPermissionForSecret(userId, secretId, requiredRoles) {
   if (!userPermissions) {
     return false; // No permissions found for this user
   }
-
+  // console.log("HMMM: ");
   // Return true or false whether the user has the required roles
   return requiredRoles.some((role) => userPermissions.roles.includes(role));
 }
