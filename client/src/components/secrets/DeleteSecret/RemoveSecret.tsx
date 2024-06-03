@@ -23,7 +23,7 @@ const RemoveSecret = ({
       console.log("On UserID: ", userId);
       console.log("Deleting SecretID: ", secretId);
       try {
-        const data = await deleteSecret(userId, secretId);
+        const data = await deleteSecret(secretId);
         console.log("DATAA: ", data);
         if (data?.code === 403) {
           setSecretResponse(data.message);

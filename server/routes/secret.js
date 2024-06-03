@@ -78,11 +78,11 @@ router.put("/:secretId", async (req, res) => {
 
 // Delete a Secret
 router.delete("/:secretId", async (req, res) => {
-  const id = req.params.secretId;
+  console.log("params: ", req.params);
+  const { secretId } = req.params;
   const { userId } = req.user;
   try {
-    const [user, secretId] = id.split("_");
-
+    console.log("secret id: ", secretId);
     const isAuthorized = await hasPermissionForSecret(userId, secretId, [
       "admin",
     ]);
