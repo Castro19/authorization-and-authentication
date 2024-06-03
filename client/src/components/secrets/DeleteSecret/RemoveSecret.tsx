@@ -7,9 +7,15 @@ type RemoveSecretProps = {
   userId: string;
   secretId: string;
   setSecrets: React.Dispatch<React.SetStateAction<SecretsType[]>>;
+  setSecretResponse: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
-const RemoveSecret = ({ userId, secretId, setSecrets }: RemoveSecretProps) => {
+const RemoveSecret = ({
+  userId,
+  secretId,
+  setSecrets,
+  setSecretResponse,
+}: RemoveSecretProps) => {
   console.log("USER IDD: ", userId);
   console.log("SECRET IDD: ", secretId);
   const onDelete = useCallback(
@@ -18,15 +24,20 @@ const RemoveSecret = ({ userId, secretId, setSecrets }: RemoveSecretProps) => {
       console.log("Deleting SecretID: ", secretId);
       try {
         const data = await deleteSecret(userId, secretId);
-        setSecrets((prevSecrets) =>
-          prevSecrets.filter((s) => s.secretId !== secretId)
-        );
+        console.log("DATAA: ", data);
+        if (data?.code === 403) {
+          setSecretResponse(data.message);
+        } else {
+          setSecrets((prevSecrets) =>
+            prevSecrets.filter((s) => s.secretId !== secretId)
+          );
+        }
         console.log("responseData: ", data);
       } catch (error) {
         console.log("Error: ", error);
       }
     },
-    [setSecrets]
+    [setSecretResponse, setSecrets]
   );
 
   return (

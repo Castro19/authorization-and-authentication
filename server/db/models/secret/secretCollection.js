@@ -70,7 +70,6 @@ export const deleteSecretByIds = async (userId, secretId) => {
   try {
     const result = await secretCollection.deleteOne({
       _id: new ObjectId(secretId), // Correct way to convert string to ObjectId
-      userId: userId, // Ensuring that the user initiating the delete is the owner
     });
     if (result.deletedCount === 0) {
       throw new Error(
@@ -93,7 +92,6 @@ export const updateSecretByIds = async (
     const result = await secretCollection.updateOne(
       {
         _id: new ObjectId(secretId), // Convert string ID to ObjectId
-        userId: userId, // Ensure only the owner can update
       },
       {
         $set: {

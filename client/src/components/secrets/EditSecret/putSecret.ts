@@ -1,4 +1,5 @@
 import addAuthHeader from "@/security/authHeader";
+import { MessageType } from "@/types";
 
 type updateSecretType = {
   userId: string;
@@ -6,7 +7,9 @@ type updateSecretType = {
   title: string;
   description: string;
 };
-export default async function updateSecret(secret: updateSecretType) {
+export default async function updateSecret(
+  secret: updateSecretType
+): Promise<MessageType> {
   const options = {
     method: "PUT",
     headers: addAuthHeader({
@@ -19,19 +22,16 @@ export default async function updateSecret(secret: updateSecretType) {
     }),
   };
   console.log("Opt: ", options);
-  try {
-    const response = await fetch(
-      `http://localhost:4000/secrets/${secret.secretId}`,
-      options
-    );
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.log(`Error with updating secret: ${errorData}`);
-      throw new Error("Error with updating secret: " + errorData.message);
-    }
-    const responseData = await response.json();
-    console.log("Response Data: ", responseData);
-  } catch (error) {
-    console.log(`Error: ${error}`);
+  const response = await fetch(
+    `http://localhost:4000/secrets/${secret.secretId}`,
+    options
+  );
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.log(`Error with updating secret: ${errorData}`);
+    return errorData;
   }
+  const responseData = await response.json();
+  console.log("Response Data: ", responseData);
+  return responseData;
 }

@@ -8,10 +8,18 @@ import { SecretsType } from "@/types";
 interface SecretsProps {
   setSecrets: React.Dispatch<React.SetStateAction<SecretsType[]>>;
   secret: SecretsType;
-  triggerEdit: any;
+  triggerEdit: (secret: SecretsType) => void;
+  secretResponse: string | undefined;
+  setSecretResponse: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-const Secret = ({ setSecrets, secret, triggerEdit }: SecretsProps) => {
+const Secret = ({
+  setSecrets,
+  secret,
+  triggerEdit,
+  secretResponse,
+  setSecretResponse,
+}: SecretsProps) => {
   const handleEdit = () => {
     triggerEdit(secret); // Function sets the editing state and the current secret to edit
   };
@@ -24,6 +32,7 @@ const Secret = ({ setSecrets, secret, triggerEdit }: SecretsProps) => {
             secretId={secret.secretId}
             userId={secret.userId}
             setSecrets={setSecrets}
+            setSecretResponse={setSecretResponse}
           />
           <EditSecret onEdit={handleEdit} />
         </div>
@@ -35,6 +44,7 @@ const Secret = ({ setSecrets, secret, triggerEdit }: SecretsProps) => {
         <p className={styles.userId}>User ID: {secret.userId}</p>
         <p className={styles.userId}>Secret ID: {secret.secretId}</p>
       </div>
+      {secretResponse}
     </>
   );
 

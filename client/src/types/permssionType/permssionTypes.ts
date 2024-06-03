@@ -3,3 +3,8 @@ export type Permission = {
   secretId: string;
   permissions: string[];
 };
+
+export type MessageType = {
+  message: string;
+  code: number;
+};

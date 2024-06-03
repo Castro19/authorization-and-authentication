@@ -7,15 +7,19 @@ import { SecretsType } from "@/types";
 import updateSecret from "../EditSecret/putSecret";
 type AddEditSecretProps = {
   trigger: boolean;
-  setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
+  setTrigger: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setSecrets: React.Dispatch<React.SetStateAction<SecretsType[]>>;
   editSecret?: SecretsType; // Optional prop for editing
+  secretResponse: string | undefined;
+  setSecretResponse: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 const AddEditSecret = ({
   trigger,
   setTrigger,
   setSecrets,
   editSecret,
+  secretResponse,
+  setSecretResponse,
 }: AddEditSecretProps) => {
   const [privacy, setPrivacy] = useState("private");
 
@@ -48,12 +52,18 @@ const AddEditSecret = ({
         description: secretDesc,
       };
       // Call an API function to update the secret
-      await updateSecret(updatedSecret);
-      setSecrets((prev) =>
-        prev.map((s) =>
-          s.secretId === editSecret.secretId ? updatedSecret : s
-        )
-      );
+      const updateSecretResponse = await updateSecret(updatedSecret);
+      console.log("UPDATED SECRETE REPSONSE:L ", updateSecretResponse);
+      if (updateSecretResponse?.code === 403) {
+        setSecretResponse(updateSecretResponse.message);
+      } else {
+        setSecrets((prev) =>
+          prev.map((s) =>
+            s.secretId === editSecret.secretId ? updatedSecret : s
+          )
+        );
+        setTrigger(false);
+      }
     } else {
       // Add new secret
       if (
@@ -86,11 +96,11 @@ const AddEditSecret = ({
       } else {
         console.log("Cannot add secret if null");
       }
+      setTrigger(false);
     }
 
     setSecretTitle("");
     setSecretDesc("");
-    setTrigger(false);
   };
 
   const handleCloseButton = () => {
@@ -162,6 +172,7 @@ const AddEditSecret = ({
           <Button type="submit" className={styles.button}>
             {editSecret ? "Update Secret" : "Add a new Secret"}
           </Button>
+          {secretResponse}
         </form>
       </div>
     </div>

@@ -64,6 +64,7 @@ router.put("/:secretId", async (req, res) => {
     if (!isAuthorized) {
       return res.status(403).json({
         message: "Access denied. You do not have the necessary permissions.",
+        code: 403,
       });
     }
 
@@ -88,6 +89,7 @@ router.delete("/:secretId", async (req, res) => {
     if (!isAuthorized) {
       return res.status(403).json({
         message: "Access denied. You do not have the necessary permissions.",
+        code: 403,
       });
     }
 
