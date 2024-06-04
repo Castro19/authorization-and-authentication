@@ -81,8 +81,5 @@ const Secret = ({
 export default Secret;
 
 /*
-      <p
-        className={styles.text}
-        dangerouslySetInnerHTML={{ __html: secret.description }}
-      ></p>
+<p className={styles.text}>{secret.description}</p>
 */

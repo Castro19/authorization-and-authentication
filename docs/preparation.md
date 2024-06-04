@@ -1,5 +1,12 @@
 # Present Steps (for me)
 
+## Intro
+
+- Explain overview of project, what it is, what it does, and what it will showcase
+  - A full stack MERN web app hosted on HTTP (build web app before I attack it)
+  - Implements auth & RBAC with the ability for users to create secrets that they can share w/ other users on the app
+- Authentication, RBAC, and and XSS attack
+
 ## Authentication (bcrypt and JWT)
 
 1. Show the empty array for the mongoDB schema including users and secrets
@@ -47,3 +54,7 @@
 
 2. Make sure it is public and submit it.
 3. Victim will now refresh his page and get a funny surprise.
+4. Fix this file to prevent XSS Scripting, [file](/client/src/components/secrets/Secret/Secret.tsx)
+5. Showcase how the XSS attack is fixed and how React escapes these characters to prevent XSS attacks
+
+- **Note**: Showcase the accidental attack I did on [https://wordcounter.net/](https://wordcounter.net/)
