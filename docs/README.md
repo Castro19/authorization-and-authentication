@@ -1,5 +1,7 @@
 # Documentation for Authorization & Access Control Project
 
+- [Youtube Demo](https://www.youtube.com/watch?v=Tw2UYslh6uE&t=1s&ab_channel=CristianCastroOliva)
+
 ## The Initial Setup (Creating the Basic Web Application)
 
 - In this initial setup, I am creating a basic CRUD application where users can manage their "`secrets`".
@@ -334,6 +336,12 @@ return (
 - The solution to this problem is trust React's default escaping to handle user input and get rid of the `dangerouslySetInnerHTML` in my JSX.
 - Another solution is to never trust user input and verify that I am sanitizing all user input before I store it into my database.
 
+### XSS Attack to echo JWT
+
+- An interesting idea would be to use XSS to see if the attacker could echo back the JWT from the victim's account
+- By doing this, the attacker could then impersonate the victim and everyone else who is also a viewer of the attacker's secret containing the malicious script.
+- I was not able to implement this in time, however, I do want to try this once Summer begins to test out how an actual malicious script could be implemented to prevent this in future web apps I build.
+
 ## Conclusion
 
 - Throughout this project I learned many useful security practices that I will continue to use as I develop web applications.
@@ -363,6 +371,8 @@ return (
 - In future projects I build, I will make sure to always verify the user input is not malicious.
 
 - Overall, I learned a lot during this project and my web development skills improved, especially in the field of web security!
+
+-
 
 ### Funny Side Note:
 
