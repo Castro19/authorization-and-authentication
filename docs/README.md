@@ -3,7 +3,7 @@
 ## The Initial Setup (Creating the Basic Web Application)
 
 - In this initial setup, I am creating a basic CRUD application where users can manage their "`secrets`".
-- In this initial setup, I am also setting up authentication and a basic level of access control with Role Based Access Control
+- In this initial setup, I am also setting up authentication and a basic level of access control with Discretionary Access Control
 
 ## Authentication
 
@@ -43,14 +43,21 @@ export async function handleSignup(userName: string, password: string) {
 }
 ```
 
-2. On Server, do the following:
-   2a. Check the username is not taken by looking into the users schema on mongoDB.
-   2b. If it is then send the message "username is taken” back to the client.
+2.  On Server, do the following:
 
-2b. If it is not, then create the hashed password using bcrypt and salt.
-2c. Store this result in the user schema for the mongoDB database
-2d. Then create the JSON Web Token by signing with my application's JSON token key
-2e. Send created Auth token back to the client
+        2a. Check the username is not taken by looking into the users schema on mongoDB.
+
+        2b. If it is then send the message "username is taken” back to the client.
+
+    ***
+
+        2b. If it is not, then create the hashed password using bcrypt and salt.
+
+        2c. Store this result in the user schema for the mongoDB database
+
+        2d. Then create the JSON Web Token by signing with my application's JSON token key
+
+        2e. Send created Auth token back to the client
 
 - [File with Code](../server/routes/register.js)
 
@@ -90,7 +97,7 @@ router.post("/signup", async (req, res) => {
 });
 ```
 
-3. Client stores this token in the local storage and is sent through the Header as an `Auth: Bearer ${token}` for every API request to our backend involving the CRUD operations for secrets or permissions
+1. Client stores this token in the local storage and is sent through the Header as an `Auth: Bearer ${token}` for every API request to our backend involving the CRUD operations for secrets or permissions
 
 - In the following code I have setup the middleware to verify the JWT
 
@@ -135,13 +142,13 @@ export function authenticateUser(req, res, next) {
 
 ### My approach to Access Control
 
-- **RBAC**: I chose Role-based Access control because of the straight-forward approach in assigning user's permissions based on their roles:
-- The following roles are assigned to each secret in the web app where different roles can be assigned to any user. Similar to how google docs allows you to share permissions with other users.
+- **DAC**: I chose Discretionary Access control because of the straight-forward approach in assigning user's permissions per resource (secret in our web app):
+- The following permissions are assigned to each secret in the web app where different secrets will have different permissions for each user depending on how the creator of the secret. Similar to how google docs allows you to share permissions with other users.
 
 - `admin`: The user can read, write, update, and delete the secret. They can also assign privileges to other users
 - `editor`: The user can view and edit (update) the secret
 - `viewer`: The user can only view the secret.
-- `No roles assigned`: The user will not be allowed to perform any CRUD operation on it and it won't be listed on their secrets page.
+- `No permissions assigned`: The user will not be allowed to perform any CRUD operation on it and it won't be listed on their secrets page.
 
 - **Storing Permissions in MongoDB in the Secrets Collection**: I was conflicted on where I should store the permissions for users, however a simple approach for me to implement was to store the permissions as a property of the secrets object in MongoDB.
 
@@ -149,11 +156,9 @@ export function authenticateUser(req, res, next) {
 
 - ![Permissions Schema](imgs/db/secrets.png)
 
-- **Side Note**: I also have the **roles** property as an array but I could make it as a string, since a user in my app only has one role. The only reason I didn't was in case I needed the flexibility of having multiple roles for some reason.
-
 ### Alternative Approaches I considered:
 
-- **ABAC vs RBAC**: Due to the simplicity of my web application, I felt that assigning permissions based on roles would suffice to the requirements I had. However, there were times where the flexibility of ABAC would have helped my project when assigning read/write access to the secrets.
+- **RBAC vs DAC**: Due to the simplicity of my web application, I felt that assigning permissions based on each secret would suffice to the requirements I had. This approach was straightforward and I would not have to worry about grouping users in roles and assigning permissions that way.
 - **Storing the permissions in the JWT**: For my small web application, this might have been possible with few permissions created. However, as the application grows, it would not seem feasible to store permissions for every secret for every user in the token.
 - **Storing the permissions in the User Collection**: I debated on if I store the permissions for secrets in the user collection. The reason I didn't was because it was more complex to fetch all the permissions for a given secret.
 - However, it would be more simple to fetch all the secrets a user is able to perform `read`, `write`, etc. operations to.
@@ -170,8 +175,8 @@ export function authenticateUser(req, res, next) {
 #### Problem 1: The Bug
 
 - My initial and basic approach for assigning privilege access control on my app was to perform the front-end first.
-- EX: A user will not see the `edit` button if they are not assigned the role `editor` or `admin`
-- While this was quick and easy to implement, it was extremely easy to perform server side operations by sending in a request that would grant my user `admin` role to a secret I didn't have access to.
+- EX: A user will not see the `edit` button if they are not assigned the permission `editor` or `admin`
+- While this was quick and easy to implement, it was extremely easy to perform server side operations by sending in a request that would grant my user `admin` to a secret I didn't have access to.
 
 1. Using [Boomerang](https://chromewebstore.google.com/detail/boomerang-soap-rest-clien/eipdnjedkpcnlmmdfdkgfpljanehloah?hl=en), I prepare to make a client side request to this endpoint: `http://localhost:4000/permissions`
 2. Assign the JSON body
@@ -182,7 +187,7 @@ export function authenticateUser(req, res, next) {
 {
   "userId": "8adb71f3-f8c7-4994-b28a-9436ff8d9709", // My attacker's userID
   "secretId": "665744bae86483868adee8e7", // The secret being attacked
-  "roles": ["admin"] // The role I am granting the attacker
+  "roles": ["admin"] // The permission I am granting the attacker
 }
 ```
 
@@ -200,7 +205,7 @@ export function authenticateUser(req, res, next) {
 
 - Since there is no server side logic to verify the permissions of the user making the request, the change is successfully submitted and the attacker will now have `admin` privileges to the secret.
 
-- - This was caused by not implementing any additional checks on the server side to verify a user's role when **reading**, **writing**, **deleting**, or **assigning roles** for a given secret.
+- - This was caused by not implementing any additional checks on the server side to verify a user's permission when **reading**, **writing**, **deleting**, or **assigning permissions** for a given secret.
 
 ### Problem 1: The Solution
 
@@ -267,7 +272,7 @@ router.post("/", async (req, res) => {
 
 - While implementing the logic for this bug, I realized that my approach to implementing **data-driven** features in web applications should start on the back-end.
 - In the future, I will keep all the buttons for the users and work on implementing the logic to verify permissions.
-- After this part is working, I will implement the front-end to view only the buttons available based on the user's role.
+- After this part is working, I will implement the front-end to view only the buttons available based on the user's permission.
 
 ## Problem 2: Never Trust User Input (XSS Attack Vulnerability)
 
@@ -321,7 +326,7 @@ return (
 - EX: `<img src="#" onerror="window.location.href='https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley'">`
 - In this example, the description for this secret is an img tag that will result in an error that will take the user to a YouTube video contains the infamous [Rick Ross Music Video](https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley)
 
-3. Before uploading this secret, make sure to set the option to **public** which is a feature in my application to grant every user the role `viewer` so this Secret will appear on their page.
+3. Before uploading this secret, make sure to set the option to **public** which is a feature in my application to grant every user the permission `viewer` so this Secret will appear on their page.
 4. Now all users that login will have this secret with the malicious Rick Ross script on their page which will redirect them to the Rick Ross music video.
 
 ### Problem 2: Solution
@@ -338,10 +343,10 @@ return (
 - I was able to successfully manage my own authentication system using Bcrypt to hash password and store the user's credentials as a username and a hashed password in my application.
 - My application also provides a stateless authentication system leveraging JWTs to manage user session and ensure a secure API communication between the client and server.
 
-### Access Control: Role Based
+### Access Control: Discretionary
 
-- Finding the correct type of access control for your specific application is crucial and I now understand why their is a lot of problems with defining roles with the goal of following principle of least privilege (`PoLP`)
-- In my application, I ended up choosing `RBAC` due to it being straightforward to implement.
+- Finding the correct type of access control for your specific application is crucial and I now understand why their is a lot of problems with defining permissions with the goal of following principle of least privilege (`PoLP`)
+- In my application, I ended up choosing `DAC` due to it being straightforward to implement.
 - However, in future web applications I build, I will put in more time in my approach to figure out the best approach for access control.
 
 ### Server Logic is Crucial for Security!

@@ -29,8 +29,8 @@
 
 - Explain process how I implemented the logic on the front-end before and how an attacker could still make a request to the server using a RESTClient or a bug.
 
-  - Attacker Token:
-  - Victim Token:
+  - Attacker Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImF0dGFja2VyIiwidXNlcklkIjoiMzVlMWU2NDAtZThkMy00NzM1LWFmNzMtMGMyZDdjMmJmOTc0IiwiaWF0IjoxNzE3NTI5OTE5LCJleHAiOjE3MTc1MzM1MTl9.UM5p4FXswHuh0wJB4IKy5u6mENfzW8J0QpT47DhA9V4
+  - Victim Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InZpY3RpbTEyMyIsInVzZXJJZCI6IjZmNzZlMTExLWUzMDMtNDVjZi05NTI1LTY1MzE5ZjhhY2YwOCIsImlhdCI6MTcxNzUyOTkzNiwiZXhwIjoxNzE3NTMzNTM2fQ.lr9Cp9YKC0ucamLdoWeiRm0N--ZuJMOpLkrDnycQ_5M
 
 1. Go on [boomerang](chrome-extension://eipdnjedkpcnlmmdfdkgfpljanehloah/workspace)
 

@@ -69,10 +69,8 @@ const Secret = ({
     <div className={styles.container}>
       <h2 className={styles.title}>{secret.title}</h2>
       <h4>By: {secret.userName}</h4>
-      <p
-        className={styles.text}
-        dangerouslySetInnerHTML={{ __html: secret.description }}
-      ></p>
+      <p className={styles.text}>{secret.description}</p>
+
       {determineAccessControl()}
     </div>
   );
@@ -82,4 +80,10 @@ export default Secret;
 
 /*
 <p className={styles.text}>{secret.description}</p>
+
+<p
+      className={styles.text}
+      dangerouslySetInnerHTML={{ __html: secret.description }}
+    ></p>
+
 */
